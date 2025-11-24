@@ -27,8 +27,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             if (token) {
                 try {
                     // Always fetch fresh user data from /me endpoint
-                    const freshUser = await authApi.me();
-                    setUser(freshUser);
+                        const freshUser = await authApi.me();
+                        setUser(freshUser);
                 } catch (error) {
                     console.error('Failed to fetch user from /me:', error);
                     // Token is invalid, clear it

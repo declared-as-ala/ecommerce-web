@@ -11,7 +11,7 @@ export const metadata: Metadata = {
   title: "Les Délices du Verger - Fruits & Légumes Frais",
   description: "Découvrez nos produits frais de qualité : fruits, légumes, produits laitiers et épicerie fine",
   icons: {
-    icon: "/icon.png",
+    icon: "/logo.png",
   },
 };
 

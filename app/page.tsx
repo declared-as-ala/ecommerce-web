@@ -72,30 +72,30 @@ export default function HomePage() {
                 </>
               ) : (
                 <>
-                  <Link href="/products" className="text-gray-700 hover:text-green-600 transition font-medium">
-                    Produits
-                  </Link>
+              <Link href="/products" className="text-gray-700 hover:text-green-600 transition font-medium">
+                Produits
+              </Link>
                   <Link href="/about" className="text-gray-700 hover:text-green-600 transition font-medium">
                     Qui sommes-nous
                   </Link>
-                  <Link href="/cart" className="text-gray-700 hover:text-green-600 transition font-medium relative">
-                    Panier
+              <Link href="/cart" className="text-gray-700 hover:text-green-600 transition font-medium relative">
+                Panier
                     {mounted && cart.length > 0 && (
-                      <span className="absolute -top-2 -right-3 bg-green-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                <span className="absolute -top-2 -right-3 bg-green-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
                         {cart.length}
-                      </span>
+                </span>
                     )}
-                  </Link>
-                  <Link href="/login">
-                    <Button variant="outline" className="border-green-600 text-green-600 hover:bg-green-50">
-                      Connexion
-                    </Button>
-                  </Link>
-                  <Link href="/register">
-                    <Button className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700">
-                      S'inscrire
-                    </Button>
-                  </Link>
+              </Link>
+              <Link href="/login">
+                <Button variant="outline" className="border-green-600 text-green-600 hover:bg-green-50">
+                  Connexion
+                </Button>
+              </Link>
+              <Link href="/register">
+                <Button className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700">
+                  S'inscrire
+                </Button>
+              </Link>
                 </>
               )}
             </nav>
@@ -109,52 +109,52 @@ export default function HomePage() {
         <div className="container mx-auto px-4 pt-8 pb-12 md:pt-12 md:pb-20 relative">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div className="space-y-8">
-              <div className="space-y-4">
-                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-green-100 text-green-700 text-sm font-medium">
-                  <Sparkles className="h-4 w-4" />
-                  Produits 100% Frais
-                </div>
-                <h1 className="text-5xl md:text-7xl font-bold leading-tight">
-                  Fruits & Légumes{' '}
-                  <span className="bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
-                    Fraîcheur Premium
-                  </span>
-                </h1>
-                <p className="text-xl text-gray-600 leading-relaxed">
-                  Découvrez notre sélection de produits frais de qualité supérieure,
-                  livrés avec soin directement à votre porte.
-                </p>
-              </div>
+                  <div className="space-y-4">
+                    <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-green-100 text-green-700 text-sm font-medium">
+                      <Sparkles className="h-4 w-4" />
+                      Produits 100% Frais
+                    </div>
+                    <h1 className="text-5xl md:text-7xl font-bold leading-tight">
+                      Fruits & Légumes{' '}
+                      <span className="bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
+                        Fraîcheur Premium
+                      </span>
+                    </h1>
+                    <p className="text-xl text-gray-600 leading-relaxed">
+                      Découvrez notre sélection de produits frais de qualité supérieure,
+                      livrés avec soin directement à votre porte.
+                    </p>
+                  </div>
 
-              <div className="flex flex-wrap gap-4">
-                <Link href="/products">
-                  <Button size="lg" className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-lg px-8 py-6 rounded-xl shadow-lg shadow-green-500/30 hover:shadow-xl hover:shadow-green-500/40 transition-all">
-                    <ShoppingCart className="mr-2 h-5 w-5" />
-                    Explorer la Boutique
-                    <ArrowRight className="ml-2 h-5 w-5" />
-                  </Button>
-                </Link>
+                  <div className="flex flex-wrap gap-4">
+                    <Link href="/products">
+                      <Button size="lg" className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-lg px-8 py-6 rounded-xl shadow-lg shadow-green-500/30 hover:shadow-xl hover:shadow-green-500/40 transition-all">
+                        <ShoppingCart className="mr-2 h-5 w-5" />
+                        Explorer la Boutique
+                        <ArrowRight className="ml-2 h-5 w-5" />
+                      </Button>
+                    </Link>
                 {!isAuthenticated && (
-                <Link href="/register">
-                  <Button size="lg" variant="outline" className="border-2 border-green-600 text-green-600 hover:bg-green-50 text-lg px-8 py-6 rounded-xl">
-                    Créer un Compte
-                  </Button>
-                </Link>
+                    <Link href="/register">
+                      <Button size="lg" variant="outline" className="border-2 border-green-600 text-green-600 hover:bg-green-50 text-lg px-8 py-6 rounded-xl">
+                        Créer un Compte
+                      </Button>
+                    </Link>
                 )}
-              </div>
+                  </div>
 
-              <div className="flex items-center gap-8 pt-4">
+                  <div className="flex items-center gap-8 pt-4">
                 <div className="relative w-16 h-16 rounded-full overflow-hidden ring-2 ring-green-500/20">
                   <img src="/logo.png" alt="Les Délices" className="w-full h-full object-cover" />
-                </div>
-                <div>
-                  <div className="flex items-center gap-1 text-yellow-500">
-                    <Star className="h-5 w-5 fill-current" />
-                    <Star className="h-5 w-5 fill-current" />
-                    <Star className="h-5 w-5 fill-current" />
-                    <Star className="h-5 w-5 fill-current" />
-                    <Star className="h-5 w-5 fill-current" />
-                  </div>
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-1 text-yellow-500">
+                        <Star className="h-5 w-5 fill-current" />
+                        <Star className="h-5 w-5 fill-current" />
+                        <Star className="h-5 w-5 fill-current" />
+                        <Star className="h-5 w-5 fill-current" />
+                        <Star className="h-5 w-5 fill-current" />
+                      </div>
                   <div className="flex items-center gap-2 mt-1">
                     <Users className="h-4 w-4 text-gray-600" />
                     <p className="text-sm text-gray-600">1000+ clients satisfaits</p>
@@ -164,10 +164,10 @@ export default function HomePage() {
             </div>
 
             <div className="relative">
-              <div className="relative">
-                <div className="absolute -inset-4 bg-gradient-to-r from-green-600 to-emerald-600 rounded-3xl blur-2xl opacity-20" />
-                <div className="relative bg-white rounded-3xl p-8 shadow-2xl">
-                  <div className="grid grid-cols-2 gap-4">
+                <div className="relative">
+                  <div className="absolute -inset-4 bg-gradient-to-r from-green-600 to-emerald-600 rounded-3xl blur-2xl opacity-20" />
+                  <div className="relative bg-white rounded-3xl p-8 shadow-2xl">
+                    <div className="grid grid-cols-2 gap-4">
                     {[
                       { name: 'Pommes', image: 'https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?w=400&h=400&fit=crop', gradient: 'from-red-500/20 to-red-600/20' },
                       { name: 'Oranges', image: 'https://images.unsplash.com/photo-1580052614034-c55d20bfee3b?w=400&h=400&fit=crop', gradient: 'from-orange-500/20 to-orange-600/20' },
@@ -184,8 +184,8 @@ export default function HomePage() {
                         <div className="absolute bottom-3 left-3 right-3">
                           <p className="text-white text-sm font-semibold drop-shadow-lg">{fruit.name}</p>
                         </div>
-                      </div>
-                    ))}
+                        </div>
+                      ))}
                   </div>
                 </div>
               </div>
@@ -205,11 +205,11 @@ export default function HomePage() {
               { value: '24/7', label: 'Service Client', icon: Shield, color: 'blue' },
             ].map((stat, i) => (
               <Card key={i} className="p-6 text-center hover:shadow-lg transition-all hover:-translate-y-1 border-none bg-gradient-to-br from-white to-gray-50">
-                <div className={`inline-flex p-3 rounded-full bg-${stat.color}-100 text-${stat.color}-600 mb-4`}>
-                  <stat.icon className="h-8 w-8" />
-                </div>
-                <h3 className="text-3xl font-bold text-gray-900 mb-1">{stat.value}</h3>
-                <p className="text-gray-600">{stat.label}</p>
+                    <div className={`inline-flex p-3 rounded-full bg-${stat.color}-100 text-${stat.color}-600 mb-4`}>
+                      <stat.icon className="h-8 w-8" />
+                    </div>
+                    <h3 className="text-3xl font-bold text-gray-900 mb-1">{stat.value}</h3>
+                    <p className="text-gray-600">{stat.label}</p>
               </Card>
             ))}
           </div>
@@ -219,15 +219,15 @@ export default function HomePage() {
       {/* Products Carousel */}
       {productsData?.products && productsData.products.length > 0 && (
         <section className="py-20 bg-white/50 backdrop-blur-sm">
-          <div className="container mx-auto px-4">
-            <div className="text-center mb-12">
-              <h2 className="text-4xl md:text-5xl font-bold mb-4">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl md:text-5xl font-bold mb-4">
                 Nos <span className="bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">Produits</span>
-              </h2>
-              <p className="text-gray-600 text-lg max-w-2xl mx-auto">
+            </h2>
+            <p className="text-gray-600 text-lg max-w-2xl mx-auto">
                 Découvrez notre sélection de produits frais
-              </p>
-            </div>
+            </p>
+          </div>
 
             <Carousel className="max-w-7xl mx-auto" autoPlay={true} interval={4000}>
               {Array.from({ length: Math.ceil((productsData.products.length || 0) / 3) }).map((_, slideIndex) => (
@@ -236,60 +236,60 @@ export default function HomePage() {
                     {productsData.products
                       .slice(slideIndex * 3, slideIndex * 3 + 3)
                       .map((product) => (
-                        <Card key={product.id} className="group overflow-hidden hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 border-none bg-white">
-                          <div className="relative h-64 overflow-hidden bg-gradient-to-br from-green-50 to-emerald-50">
-                            <img
-                              src={product.Image}
-                              alt={product.title}
-                              className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                            />
-                            <div className="absolute top-4 right-4">
-                              <Button size="icon" variant="secondary" className="rounded-full bg-white/90 backdrop-blur-sm hover:bg-white">
-                                <Heart className="h-4 w-4" />
-                              </Button>
-                            </div>
-                            <div className="absolute bottom-4 left-4">
-                              <span className="px-3 py-1 rounded-full bg-green-600 text-white text-xs font-medium">
-                                {product.category}
-                              </span>
-                            </div>
-                          </div>
-                          <div className="p-6">
-                            <h3 className="font-semibold text-lg mb-2 line-clamp-2 group-hover:text-green-600 transition">
-                              {product.title}
-                            </h3>
-                            <div className="flex items-center justify-between mb-4">
-                              <span className="text-2xl font-bold text-green-600">
-                                {formatPrice(product.variants[0]?.price || 0)}
-                              </span>
-                              <span className="text-sm text-gray-500">
-                                {product.variants[0]?.unit_type === 'weight' ? 'au kg' : 'pièce'}
-                              </span>
-                            </div>
-                            <Link href={`/products/${product.id}`}>
-                              <Button className="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700">
-                                <ShoppingCart className="mr-2 h-4 w-4" />
-                                Ajouter au panier
-                              </Button>
-                            </Link>
-                          </div>
-                        </Card>
-                      ))}
+              <Card key={product.id} className="group overflow-hidden hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 border-none bg-white">
+                <div className="relative h-64 overflow-hidden bg-gradient-to-br from-green-50 to-emerald-50">
+                  <img
+                    src={product.Image}
+                    alt={product.title}
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                  />
+                  <div className="absolute top-4 right-4">
+                    <Button size="icon" variant="secondary" className="rounded-full bg-white/90 backdrop-blur-sm hover:bg-white">
+                      <Heart className="h-4 w-4" />
+                    </Button>
                   </div>
+                  <div className="absolute bottom-4 left-4">
+                    <span className="px-3 py-1 rounded-full bg-green-600 text-white text-xs font-medium">
+                      {product.category}
+                    </span>
+                  </div>
+                </div>
+                <div className="p-6">
+                  <h3 className="font-semibold text-lg mb-2 line-clamp-2 group-hover:text-green-600 transition">
+                    {product.title}
+                  </h3>
+                  <div className="flex items-center justify-between mb-4">
+                    <span className="text-2xl font-bold text-green-600">
+                      {formatPrice(product.variants[0]?.price || 0)}
+                    </span>
+                    <span className="text-sm text-gray-500">
+                      {product.variants[0]?.unit_type === 'weight' ? 'au kg' : 'pièce'}
+                    </span>
+                  </div>
+                  <Link href={`/products/${product.id}`}>
+                    <Button className="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700">
+                      <ShoppingCart className="mr-2 h-4 w-4" />
+                      Ajouter au panier
+                    </Button>
+                  </Link>
+                </div>
+              </Card>
+            ))}
+          </div>
                 </CarouselItem>
               ))}
             </Carousel>
 
-            <div className="text-center mt-12">
-              <Link href="/products">
-                <Button size="lg" variant="outline" className="border-2 border-green-600 text-green-600 hover:bg-green-50">
-                  Voir tous les produits
-                  <ArrowRight className="ml-2 h-5 w-5" />
-                </Button>
-              </Link>
-            </div>
+          <div className="text-center mt-12">
+            <Link href="/products">
+              <Button size="lg" variant="outline" className="border-2 border-green-600 text-green-600 hover:bg-green-50">
+                Voir tous les produits
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </Button>
+            </Link>
           </div>
-        </section>
+        </div>
+      </section>
       )}
 
       {/* Categories Carousel */}
@@ -371,11 +371,11 @@ export default function HomePage() {
               }
             ].map((feature, i) => (
               <Card key={i} className="p-8 text-center hover:shadow-xl transition-all hover:-translate-y-1 border-none bg-white group">
-                <div className={`inline-flex p-4 rounded-2xl bg-gradient-to-br ${feature.gradient} mb-6 group-hover:scale-110 transition-transform`}>
-                  <feature.icon className="h-8 w-8 text-white" />
-                </div>
-                <h3 className="text-xl font-bold mb-3">{feature.title}</h3>
-                <p className="text-gray-600 leading-relaxed">{feature.description}</p>
+                    <div className={`inline-flex p-4 rounded-2xl bg-gradient-to-br ${feature.gradient} mb-6 group-hover:scale-110 transition-transform`}>
+                      <feature.icon className="h-8 w-8 text-white" />
+                    </div>
+                    <h3 className="text-xl font-bold mb-3">{feature.title}</h3>
+                    <p className="text-gray-600 leading-relaxed">{feature.description}</p>
               </Card>
             ))}
           </div>
