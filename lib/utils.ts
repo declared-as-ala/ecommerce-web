@@ -36,6 +36,10 @@ export function formatDate(date: string | Date, format: 'short' | 'long' = 'shor
 
 // Get variant display text
 export function getVariantDisplay(variant: any): string {
+  if (!variant) {
+    return 'unité';
+  }
+  
   if (variant.unit_type === 'weight' && variant.grams) {
     if (variant.grams >= 1000) {
       return `${variant.grams / 1000}kg`;

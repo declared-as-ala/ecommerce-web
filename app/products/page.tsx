@@ -38,26 +38,10 @@ export default function ProductsPage() {
         setCurrentPage(1);
     }, [selectedCategory, search]);
 
-    // Category images mapping
-    const categoryImages: Record<string, string> = {
-        'Argumes': 'https://images.unsplash.com/photo-1580052614034-c55d20bfee3b?w=200&h=200&fit=crop',
-        'Corbeille de fruit': 'https://images.unsplash.com/photo-1610832958506-aa56368176cf?w=200&h=200&fit=crop',
-        'Épicerie Fine': 'https://images.unsplash.com/photo-1556910103-1c02745aae4d?w=200&h=200&fit=crop',
-        'Fruits coupés': 'https://images.unsplash.com/photo-1563565375-f3fdfdbefa83?w=200&h=200&fit=crop',
-        'Fruits De Saison': 'https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?w=200&h=200&fit=crop',
-        'Fruits exotiques': 'https://media.istockphoto.com/id/833525214/photo/mixed-fruit-falling-in-colorful-juices-splashing.jpg?s=612x612&w=0&k=20&c=ezBT8M2VlFeBvm_DB57eEDWDwC2j4q8JeR_6OzAvy1Q=',
-        'Fruits rouges': 'https://images.unsplash.com/photo-1464965911861-746a04b4bca6?w=200&h=200&fit=crop',
-        'Fruits secs': 'https://media.gettyimages.com/id/95230433/fr/photo/de-fruits-bio-sain-noix-confites.webp?s=2048x2048&w=gi&k=20&c=kwAsWOsfRf4op2RoH9tvgsth4cMCJR0vk52AsSJFn1g=',
-        'Herbes harmonique': 'https://plus.unsplash.com/premium_photo-1725899523683-838307ab1552?q=80&w=1169&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-        'Jus De Fruits': 'https://images.unsplash.com/photo-1600271886742-f049cd451bba?w=200&h=200&fit=crop',
-        'Légumes': 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=200&h=200&fit=crop',
-        'Produits laitiers': 'https://images.unsplash.com/photo-1486297678162-eb2a19b0a32d?w=200&h=200&fit=crop',
-        'Salades': 'https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=200&h=200&fit=crop',
-        'Tomates': 'https://images.unsplash.com/photo-1592841200221-a6898f307baa?w=200&h=200&fit=crop',
-    };
-
+    // Get category image from constants
     const getCategoryImage = (categoryName: string) => {
-        return categoryImages[categoryName] || 'https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?w=200&h=200&fit=crop';
+        const category = CATEGORIES.find(cat => cat.name === categoryName);
+        return category?.image || 'https://images.pexels.com/photos/1092730/pexels-photo-1092730.jpeg';
     };
 
     const handleAddToCart = (product: any) => {
@@ -182,7 +166,7 @@ export default function ProductsPage() {
                             <div className={viewMode === 'grid' ? 'grid md:grid-cols-2 xl:grid-cols-3 gap-6' : 'space-y-4'}>
                                 {productsData.products.map((product) => {
                                     const isFavorite = favorites.some(f => f.id === product.id);
-                                    const variant = product.variants[0];
+                                    const variant = product.variants && product.variants.length > 0 ? product.variants[0] : null;
                                     return (
                                         <Card key={product.id} className="group overflow-hidden hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 border-none bg-white">
                                             {viewMode === 'grid' ? (
@@ -198,7 +182,7 @@ export default function ProductsPage() {
                                                         <h3 className="font-semibold text-lg mb-2 line-clamp-2 group-hover:text-green-600 transition">{product.title}</h3>
                                                         <div className="flex items-center justify-between mb-4">
                                                             <span className="text-2xl font-bold text-green-600">{formatPrice(variant?.price || 0)}</span>
-                                                            <span className="text-sm text-gray-500">{getVariantDisplay(variant)}</span>
+                                                            <span className="text-sm text-gray-500">{variant ? getVariantDisplay(variant) : 'unité'}</span>
                                                         </div>
                                                         <div className="flex gap-2">
                                                             <Button className="flex-1 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700" onClick={() => handleAddToCart(product)}>
@@ -224,7 +208,7 @@ export default function ProductsPage() {
                                                         <div className="flex items-center justify-between">
                                                             <div>
                                                                 <span className="text-3xl font-bold text-green-600">{formatPrice(variant?.price || 0)}</span>
-                                                                <span className="text-gray-500 ml-2">/ {getVariantDisplay(variant)}</span>
+                                                                <span className="text-gray-500 ml-2">/ {variant ? getVariantDisplay(variant) : 'unité'}</span>
                                                             </div>
                                                             <div className="flex gap-2">
                                                                 <Button size="icon" variant="outline" onClick={() => toggleFavorite(product)}>
