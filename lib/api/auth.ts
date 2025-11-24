@@ -5,13 +5,29 @@ export const authApi = {
     // Register new user
     async register(data: RegisterData): Promise<AuthResponse> {
         const response = await apiClient.post('/api/auth/register', data);
-        return response.data;
+        const responseData = response.data;
+        // Ensure user object has id mapped from _id
+        if (responseData.user) {
+            responseData.user = {
+                ...responseData.user,
+                id: responseData.user._id || responseData.user.id,
+            };
+        }
+        return responseData;
     },
 
     // Login
     async login(credentials: LoginCredentials): Promise<AuthResponse> {
         const response = await apiClient.post('/api/auth/login', credentials);
-        return response.data;
+        const responseData = response.data;
+        // Ensure user object has id mapped from _id
+        if (responseData.user) {
+            responseData.user = {
+                ...responseData.user,
+                id: responseData.user._id || responseData.user.id,
+            };
+        }
+        return responseData;
     },
 
     // Refresh token
@@ -23,13 +39,23 @@ export const authApi = {
     // Get current user
     async me(): Promise<Customer> {
         const response = await apiClient.get('/api/auth/me');
-        return response.data;
+        const userData = response.data.user || response.data;
+        // Map _id to id to match Customer type
+        return {
+            ...userData,
+            id: userData._id || userData.id,
+        };
     },
 
     // Update profile
     async updateProfile(data: UpdateProfileData): Promise<Customer> {
         const response = await apiClient.put('/api/profile', data);
-        return response.data;
+        const userData = response.data.user || response.data;
+        // Map _id to id to match Customer type
+        return {
+            ...userData,
+            id: userData._id || userData.id,
+        };
     },
 
     // Forgot password

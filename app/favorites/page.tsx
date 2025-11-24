@@ -10,7 +10,7 @@ import { formatPrice, getVariantDisplay } from '@/lib/utils';
 import { toast } from 'sonner';
 
 export default function FavoritesPage() {
-    const { favorites, removeFromFavorites, addToCart } = useStore();
+    const { favorites, removeFromFavorites, addToCart, cart, isAuthenticated, user } = useStore();
 
     const handleRemove = (productId: string) => {
         removeFromFavorites(productId);
@@ -33,9 +33,36 @@ export default function FavoritesPage() {
                             <img src="/logo.png" alt="Logo" className="w-10 h-10 rounded-full" />
                             <span className="text-xl font-bold">Les Délices</span>
                         </Link>
-                        <nav className="flex gap-4">
+                        <nav className="flex items-center gap-4">
                             <Link href="/products"><Button variant="outline">Produits</Button></Link>
-                            <Link href="/cart"><Button variant="outline">Panier</Button></Link>
+                            <Link href="/cart" className="relative">
+                                <Button variant="outline" className="relative">
+                                    Panier
+                                    {cart.length > 0 && (
+                                        <span className="absolute -top-2 -right-2 bg-green-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                                            {cart.length}
+                                        </span>
+                                    )}
+                                </Button>
+                            </Link>
+                            <Link href="/favorites" className="relative">
+                                <Button variant="outline" className="relative">
+                                    <Heart className="h-4 w-4 mr-2" />
+                                    Favoris
+                                    {favorites.length > 0 && (
+                                        <span className="absolute -top-2 -right-2 bg-red-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                                            {favorites.length}
+                                        </span>
+                                    )}
+                                </Button>
+                            </Link>
+                            {isAuthenticated && (
+                                <Link href="/profile">
+                                    <Button className="bg-gradient-to-r from-green-600 to-emerald-600">
+                                        {user?.firstName || 'Profil'}
+                                    </Button>
+                                </Link>
+                            )}
                         </nav>
                     </div>
                 </div>

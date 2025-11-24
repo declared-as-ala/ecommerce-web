@@ -31,7 +31,6 @@ export function ProductsHeader() {
                         <nav className="hidden md:flex items-center space-x-6">
                             <Link href="/products" className="text-green-600 font-semibold">Produits</Link>
                             <Link href="/about" className="text-gray-700 hover:text-green-600 transition">Qui sommes-nous</Link>
-                            <Link href="/cart" className="text-gray-700 hover:text-green-600 transition">Panier</Link>
                             <Link href="/favorites" className="text-gray-700 hover:text-green-600 transition">Favoris</Link>
                         </nav>
 
@@ -67,7 +66,6 @@ export function ProductsHeader() {
                     <nav className="hidden md:flex items-center space-x-6">
                         <Link href="/products" className="text-green-600 font-semibold">Produits</Link>
                         <Link href="/about" className="text-gray-700 hover:text-green-600 transition">Qui sommes-nous</Link>
-                        <Link href="/cart" className="text-gray-700 hover:text-green-600 transition">Panier</Link>
                         <Link href="/favorites" className="text-gray-700 hover:text-green-600 transition">Favoris</Link>
                         {isAuthenticated && (
                             <Link href="/orders" className="text-gray-700 hover:text-green-600 transition">Commandes</Link>

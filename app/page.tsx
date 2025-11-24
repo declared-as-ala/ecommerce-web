@@ -229,7 +229,7 @@ export default function HomePage() {
             </div>
           </div>
 
-          {/* Categories Carousel in Hero */}
+          {/* Categories Scrollable Grid */}
           {CATEGORIES && CATEGORIES.length > 0 && (
             <div className="max-w-7xl mx-auto">
               <div className="text-center mb-6 sm:mb-8">
@@ -240,43 +240,41 @@ export default function HomePage() {
                   Parcourez notre large gamme de produits frais
                 </p>
               </div>
-              <Carousel className="max-w-7xl mx-auto" autoPlay={true} interval={3000}>
-                {Array.from({ length: Math.ceil(CATEGORIES.length / 4) }).map((_, slideIndex) => (
-                  <CarouselItem key={slideIndex}>
-                    <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 md:gap-6 px-2 sm:px-4">
-                      {CATEGORIES
-                        .slice(slideIndex * 4, slideIndex * 4 + 4)
-                        .map((category: { id: string; name: string; description: string; image?: string }) => (
-                          <Link key={category.id} href={`/products?category=${encodeURIComponent(category.name)}`}>
-                            <Card className="group overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-2 border-none bg-white cursor-pointer h-full">
-                              <div className="relative h-32 sm:h-40 md:h-48 overflow-hidden bg-gradient-to-br from-green-50 to-emerald-50">
-                                {category.image ? (
-                                  <img 
-                                    src={category.image} 
-                                    alt={category.name}
-                                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                                  />
-                                ) : (
-                                  <div className="w-full h-full flex items-center justify-center">
-                                    <div className="inline-flex p-3 sm:p-4 rounded-full bg-gradient-to-br from-green-500 to-emerald-500 group-hover:scale-110 transition-transform">
-                                      <Tag className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
-                                    </div>
-                                  </div>
-                                )}
-                                <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+              <div className="overflow-x-auto pb-4 scrollbar-thin scrollbar-thumb-green-600 scrollbar-track-gray-100">
+                <div className="flex gap-3 sm:gap-4 md:gap-6 px-2 sm:px-4 min-w-max">
+                  {CATEGORIES.map((category: { id: string; name: string; description: string; image?: string }) => (
+                    <Link 
+                      key={category.id} 
+                      href={`/products?category=${encodeURIComponent(category.name)}`}
+                      className="flex-shrink-0 w-[140px] sm:w-[160px] md:w-[180px]"
+                    >
+                      <Card className="group overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-2 border-none bg-white cursor-pointer h-full">
+                        <div className="relative h-28 sm:h-36 md:h-44 overflow-hidden bg-gradient-to-br from-green-50 to-emerald-50">
+                          {category.image ? (
+                            <img 
+                              src={category.image} 
+                              alt={category.name}
+                              className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                            />
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center">
+                              <div className="inline-flex p-3 sm:p-4 rounded-full bg-gradient-to-br from-green-500 to-emerald-500 group-hover:scale-110 transition-transform">
+                                <Tag className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
                               </div>
-                              <div className="p-3 sm:p-4 text-center">
-                                <h3 className="font-semibold text-xs sm:text-sm md:text-base text-gray-900 group-hover:text-green-600 transition line-clamp-2">
-                                  {category.name}
-                                </h3>
-                              </div>
-                            </Card>
-                          </Link>
-                        ))}
-                    </div>
-                  </CarouselItem>
-                ))}
-              </Carousel>
+                            </div>
+                          )}
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                        </div>
+                        <div className="p-3 sm:p-4 text-center">
+                          <h3 className="font-semibold text-xs sm:text-sm md:text-base text-gray-900 group-hover:text-green-600 transition line-clamp-2">
+                            {category.name}
+                          </h3>
+                        </div>
+                      </Card>
+                    </Link>
+                  ))}
+                </div>
+              </div>
             </div>
           )}
         </div>

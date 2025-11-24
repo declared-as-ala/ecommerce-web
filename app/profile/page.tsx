@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -29,7 +29,7 @@ export default function ProfilePage() {
     const [isEditing, setIsEditing] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
 
-    const { register, handleSubmit, formState: { errors } } = useForm<ProfileForm>({
+    const { register, handleSubmit, formState: { errors }, reset } = useForm<ProfileForm>({
         resolver: zodResolver(profileSchema),
         defaultValues: {
             firstName: user?.firstName || '',
@@ -37,6 +37,17 @@ export default function ProfilePage() {
             phone: user?.phone || '',
         },
     });
+
+    // Update form values when user data loads
+    useEffect(() => {
+        if (user) {
+            reset({
+                firstName: user.firstName || '',
+                lastName: user.lastName || '',
+                phone: user.phone || '',
+            });
+        }
+    }, [user, reset]);
 
     const onSubmit = async (data: ProfileForm) => {
         setIsLoading(true);
