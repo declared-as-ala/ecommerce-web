@@ -40,27 +40,30 @@ export const PICKUP_LOCATIONS = [
     },
 ];
 
-export const DELIVERY_ZONES = [
-    { postalCode: '75001', available: true, fee: 5 },
-    { postalCode: '75002', available: true, fee: 5 },
-    { postalCode: '75003', available: true, fee: 5 },
-    { postalCode: '75004', available: true, fee: 5 },
-    { postalCode: '75005', available: true, fee: 5 },
-    { postalCode: '75006', available: true, fee: 5 },
-    { postalCode: '75007', available: true, fee: 5 },
-    { postalCode: '75008', available: true, fee: 5 },
-    { postalCode: '75009', available: true, fee: 5 },
-    { postalCode: '75010', available: true, fee: 5 },
-    { postalCode: '75011', available: true, fee: 5 },
-    { postalCode: '75012', available: true, fee: 5 },
-    { postalCode: '75013', available: true, fee: 5 },
-    { postalCode: '75014', available: true, fee: 5 },
-    { postalCode: '75015', available: true, fee: 5 },
-    { postalCode: '75016', available: true, fee: 5 },
-    { postalCode: '75017', available: true, fee: 5 },
-    { postalCode: '75018', available: true, fee: 5 },
-    { postalCode: '75019', available: true, fee: 5 },
-    { postalCode: '75020', available: true, fee: 5 },
+export interface DeliveryZone {
+    code_postal: string;
+    ville: string;
+}
+
+export const DELIVERY_ZONES: DeliveryZone[] = [
+    { code_postal: '93100', ville: 'Montreuil' },
+    { code_postal: '93160', ville: 'Noisy-le-Grand' },
+    { code_postal: '93170', ville: 'Bagnolet' },
+    { code_postal: '93260', ville: 'Les Lilas' },
+    { code_postal: '93460', ville: 'Gournay-sur-Marne' },
+    { code_postal: '94120', ville: 'Fontenay-sous-Bois' },
+    { code_postal: '94130', ville: 'Nogent-sur-Marne' },
+    { code_postal: '94160', ville: 'Saint-Mandé' },
+    { code_postal: '94170', ville: 'Le Perreux-sur-Marne' },
+    { code_postal: '94300', ville: 'Vincennes' },
+    { code_postal: '94340', ville: 'Joinville-le-Pont' },
+    { code_postal: '94360', ville: 'Bry-sur-Marne' },
+    { code_postal: '75012', ville: 'Paris 12e Arrondissement' },
+    { code_postal: '75019', ville: 'Paris 19e Arrondissement' },
+    { code_postal: '75020', ville: 'Paris 20e Arrondissement' },
+    { code_postal: '77360', ville: 'Vaires-sur-Marne' },
+    { code_postal: '77420', ville: 'Champs-sur-Marne' },
+    { code_postal: '77500', ville: 'Chelles' },
 ];
 
 export const DELIVERY_FEE = 5;
@@ -75,5 +78,23 @@ export const DELIVERY_TIME_SLOTS = [
 ];
 
 export const isDeliveryZoneAvailable = (postalCode: string): boolean => {
-    return DELIVERY_ZONES.some((zone) => zone.postalCode === postalCode && zone.available);
+    if (!postalCode) return false;
+    const cleanCode = postalCode.replace(/\s/g, '').padStart(5, '0');
+    return DELIVERY_ZONES.some((zone) => zone.code_postal === cleanCode);
+};
+
+export const getDeliveryZoneByPostalCode = (postalCode: string): DeliveryZone | null => {
+    if (!postalCode) return null;
+    const cleanCode = postalCode.replace(/\s/g, '').padStart(5, '0');
+    return DELIVERY_ZONES.find((zone) => zone.code_postal === cleanCode) || null;
+};
+
+export const getPostalCodeSuggestions = (input: string): DeliveryZone[] => {
+    if (!input || input.length < 2) return [];
+    const cleanInput = input.replace(/\s/g, '').toLowerCase();
+    return DELIVERY_ZONES.filter(
+        (zone) =>
+            zone.code_postal.startsWith(cleanInput) ||
+            zone.ville.toLowerCase().includes(cleanInput)
+    ).slice(0, 5);
 };
