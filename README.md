@@ -20,6 +20,30 @@ npm start
 
 The application will be available at `http://localhost:3000`
 
+## 🌐 Vercel Deployment
+
+### Prerequisites
+1. Push your code to GitHub
+2. Connect your GitHub repository to Vercel
+3. Configure environment variables in Vercel dashboard
+
+### Required Environment Variables
+Add these in Vercel project settings → Environment Variables:
+
+```
+NEXT_PUBLIC_API_URL=https://backend-silk-kappa-59.vercel.app
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=your_stripe_publishable_key
+NEXT_PUBLIC_PAYPAL_CLIENT_ID=your_paypal_client_id
+```
+
+### Deployment Steps
+1. Import your GitHub repository in Vercel
+2. Vercel will auto-detect Next.js framework
+3. Add the environment variables above
+4. Click "Deploy"
+
+The `vercel.json` file is configured for optimal Next.js deployment.
+
 ## ✅ Implemented Features
 
 ### Foundation & Setup
