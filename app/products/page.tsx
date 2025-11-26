@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import Link from 'next/link';
 import { useQuery } from '@tanstack/react-query';
 import { productsApi } from '@/lib/api/products';
@@ -11,23 +11,44 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Badge } from '@/components/ui/badge';
-import { Search, Heart, ShoppingCart, Grid, List, ChevronRight, ChevronLeft } from 'lucide-react';
+import { Search, Heart, ShoppingCart, Grid, List, ChevronRight, ChevronLeft, X, Filter } from 'lucide-react';
 import { formatPrice, getVariantDisplay } from '@/lib/utils';
 import { CATEGORIES } from '@/lib/constants';
 import { toast } from 'sonner';
+
+// Debounce hook for search
+function useDebounce<T>(value: T, delay: number): T {
+    const [debouncedValue, setDebouncedValue] = useState<T>(value);
+
+    useEffect(() => {
+        const handler = setTimeout(() => {
+            setDebouncedValue(value);
+        }, delay);
+
+        return () => {
+            clearTimeout(handler);
+        };
+    }, [value, delay]);
+
+    return debouncedValue;
+}
 
 export default function ProductsPage() {
     const [search, setSearch] = useState('');
     const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
     const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
     const [currentPage, setCurrentPage] = useState(1);
+    const [isFilterOpen, setIsFilterOpen] = useState(false);
     const { addToCart, favorites, addToFavorites, removeFromFavorites } = useStore();
 
+    // Debounce search input
+    const debouncedSearch = useDebounce(search, 300);
+
     const { data: productsData, isLoading } = useQuery({
-        queryKey: ['products', selectedCategory, search, currentPage],
+        queryKey: ['products', selectedCategory, debouncedSearch, currentPage],
         queryFn: () => productsApi.getProducts({
             category: selectedCategory || undefined,
-            search: search || undefined,
+            search: debouncedSearch || undefined,
             page: currentPage,
             limit: 12,
         }),
@@ -36,21 +57,21 @@ export default function ProductsPage() {
     // Reset to page 1 when category or search changes
     useEffect(() => {
         setCurrentPage(1);
-    }, [selectedCategory, search]);
+    }, [selectedCategory, debouncedSearch]);
 
     // Get category image from constants
-    const getCategoryImage = (categoryName: string) => {
+    const getCategoryImage = useCallback((categoryName: string) => {
         const category = CATEGORIES.find(cat => cat.name === categoryName);
         return category?.image || 'https://images.pexels.com/photos/1092730/pexels-photo-1092730.jpeg';
-    };
+    }, []);
 
-    const handleAddToCart = (product: any) => {
+    const handleAddToCart = useCallback((product: any) => {
         const defaultVariant = product.variants[0];
         addToCart(product, defaultVariant);
         toast.success('Produit ajouté au panier!');
-    };
+    }, [addToCart]);
 
-    const toggleFavorite = (product: any) => {
+    const toggleFavorite = useCallback((product: any) => {
         const isFav = favorites.some(f => f.id === product.id);
         if (isFav) {
             removeFromFavorites(product.id);
@@ -59,51 +80,114 @@ export default function ProductsPage() {
             addToFavorites(product);
             toast.success('Ajouté aux favoris');
         }
-    };
+    }, [favorites, addToFavorites, removeFromFavorites]);
+
+    const clearFilters = useCallback(() => {
+        setSearch('');
+        setSelectedCategory(null);
+        setCurrentPage(1);
+    }, []);
+
+    const hasActiveFilters = search || selectedCategory;
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-green-50">
             <ProductsHeader />
 
-            <div className="container mx-auto px-4 py-8">
-                <div className="mb-8">
-                    <h1 className="text-4xl md:text-5xl font-bold mb-4">
+            <div className="container mx-auto px-4 py-6 md:py-8">
+                {/* Header Section */}
+                <div className="mb-6 md:mb-8">
+                    <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
+                        <div>
+                            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-2">
                         Nos <span className="bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">Produits</span>
                     </h1>
-                    <p className="text-gray-600 text-lg mb-6">
+                            <p className="text-gray-600 text-sm md:text-base">
                         {productsData?.total || 0} produits frais disponibles
                     </p>
-                    
-                    {/* Categories Scrollable */}
-                    <div className="mb-6 sm:mb-8">
-                        <div className="overflow-x-auto pb-3 scrollbar-thin scrollbar-thumb-green-600 scrollbar-track-gray-100">
-                            <div className="flex gap-2 sm:gap-3 min-w-max">
+                        </div>
+                        
+                        {/* Search Bar - Compact */}
+                        <div className="relative max-w-md w-full md:w-auto">
+                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 md:h-5 md:w-5 text-gray-400" />
+                            <Input
+                                placeholder="Rechercher un produit..."
+                                className="pl-10 h-10 md:h-12 bg-white border-2 border-gray-200 focus:border-green-500 rounded-xl shadow-sm transition-all duration-200"
+                                value={search}
+                                onChange={(e) => setSearch(e.target.value)}
+                            />
+                            {search && (
                                 <button
-                                    onClick={() => setSelectedCategory(null)}
-                                    className={`flex-shrink-0 flex flex-col items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-3 sm:py-4 rounded-lg sm:rounded-xl transition-all border-2 min-w-[90px] sm:min-w-[110px] md:min-w-[130px] shadow-sm ${!selectedCategory ? 'bg-gradient-to-br from-green-50 to-emerald-50 border-green-500 text-green-700 font-medium shadow-md scale-105' : 'border-gray-200 hover:border-green-300 hover:bg-green-50/50 text-gray-700 bg-white hover:shadow-md'}`}
+                                    onClick={() => setSearch('')}
+                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
                                 >
-                                    <div className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 rounded-lg sm:rounded-xl bg-gradient-to-br from-green-400 to-emerald-500 flex items-center justify-center text-white font-bold text-xs sm:text-sm shadow-lg">
+                                    <X className="h-4 w-4" />
+                                </button>
+                            )}
+                        </div>
+                    </div>
+                    
+                    {/* Categories - Smooth Scrollable */}
+                    <div className="mb-4 md:mb-6">
+                        <div className="flex items-center justify-between mb-3">
+                            <h2 className="text-sm font-semibold text-gray-700">Catégories</h2>
+                            {hasActiveFilters && (
+                                <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={clearFilters}
+                                    className="text-xs text-gray-600 hover:text-gray-900"
+                                >
+                                    <X className="h-3 w-3 mr-1" />
+                                    Réinitialiser
+                                </Button>
+                            )}
+                        </div>
+                        <div className="overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-green-600 scrollbar-track-gray-100 scrollbar-thumb-rounded-full">
+                            <div className="flex gap-2 md:gap-3 min-w-max">
+                                <button
+                                    onClick={() => {
+                                        setSelectedCategory(null);
+                                        setCurrentPage(1);
+                                    }}
+                                    className={`flex-shrink-0 flex flex-col items-center gap-1.5 px-3 py-2.5 rounded-xl transition-all duration-300 border-2 min-w-[80px] md:min-w-[100px] shadow-sm transform hover:scale-105 active:scale-95 ${
+                                        !selectedCategory 
+                                            ? 'bg-gradient-to-br from-green-50 to-emerald-50 border-green-500 text-green-700 font-medium shadow-md' 
+                                            : 'border-gray-200 hover:border-green-300 hover:bg-green-50/50 text-gray-700 bg-white hover:shadow-md'
+                                    }`}
+                                >
+                                    <div className={`w-10 h-10 md:w-12 md:h-12 rounded-xl bg-gradient-to-br from-green-400 to-emerald-500 flex items-center justify-center text-white font-bold text-xs shadow-lg transition-transform duration-300 ${!selectedCategory ? 'scale-110' : ''}`}>
                                         Tous
                                     </div>
-                                    <span className="text-[10px] sm:text-xs font-semibold text-center">Tous</span>
+                                    <span className="text-[10px] md:text-xs font-semibold text-center">Tous</span>
                                 </button>
                                 {CATEGORIES.map((cat) => (
                                     <button
                                         key={cat.id}
-                                        onClick={() => setSelectedCategory(cat.name)}
-                                        className={`flex-shrink-0 flex flex-col items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-3 sm:py-4 rounded-lg sm:rounded-xl transition-all border-2 min-w-[90px] sm:min-w-[110px] md:min-w-[130px] shadow-sm ${selectedCategory === cat.name ? 'bg-gradient-to-br from-green-50 to-emerald-50 border-green-500 shadow-md scale-105' : 'border-gray-200 hover:border-green-300 hover:shadow-md bg-white'}`}
+                                        onClick={() => {
+                                            setSelectedCategory(cat.name);
+                                            setCurrentPage(1);
+                                        }}
+                                        className={`flex-shrink-0 flex flex-col items-center gap-1.5 px-3 py-2.5 rounded-xl transition-all duration-300 border-2 min-w-[80px] md:min-w-[100px] shadow-sm transform hover:scale-105 active:scale-95 ${
+                                            selectedCategory === cat.name 
+                                                ? 'bg-gradient-to-br from-green-50 to-emerald-50 border-green-500 shadow-md' 
+                                                : 'border-gray-200 hover:border-green-300 hover:shadow-md bg-white'
+                                        }`}
                                     >
-                                        <div className="relative w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 rounded-lg sm:rounded-xl overflow-hidden shadow-md">
+                                        <div className={`relative w-10 h-10 md:w-12 md:h-12 rounded-xl overflow-hidden shadow-md transition-transform duration-300 ${selectedCategory === cat.name ? 'scale-110' : ''}`}>
                                             <img
                                                 src={getCategoryImage(cat.name)}
                                                 alt={cat.name}
                                                 className="w-full h-full object-cover"
+                                                loading="lazy"
                                             />
                                             {selectedCategory === cat.name && (
-                                                <div className="absolute inset-0 bg-green-500/30 ring-2 ring-green-500 rounded-lg sm:rounded-xl" />
+                                                <div className="absolute inset-0 bg-green-500/30 ring-2 ring-green-500 rounded-xl animate-pulse" />
                                             )}
                                         </div>
-                                        <span className={`text-[10px] sm:text-xs font-semibold text-center line-clamp-2 w-full ${selectedCategory === cat.name ? 'text-green-700' : 'text-gray-700'}`}>
+                                        <span className={`text-[10px] md:text-xs font-semibold text-center line-clamp-2 w-full transition-colors duration-200 ${
+                                            selectedCategory === cat.name ? 'text-green-700' : 'text-gray-700'
+                                        }`}>
                                             {cat.name}
                                         </span>
                                     </button>
@@ -111,50 +195,47 @@ export default function ProductsPage() {
                             </div>
                         </div>
                     </div>
-                    
-                    {/* Search Bar */}
-                    <div className="mb-6">
-                        <div className="relative max-w-md">
-                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
-                            <Input
-                                placeholder="Rechercher un produit..."
-                                className="pl-10 h-12 bg-white border-2 border-gray-200 focus:border-green-500 rounded-xl shadow-sm"
-                                value={search}
-                                onChange={(e) => setSearch(e.target.value)}
-                            />
-                        </div>
-                    </div>
                 </div>
 
-                {/* View Mode Toggle */}
-                <div className="flex items-center justify-between mb-4 sm:mb-6">
+                {/* View Mode Toggle & Results Count */}
+                <div className="flex items-center justify-between mb-4 md:mb-6">
                     <div className="flex items-center gap-2">
-                        <Button variant={viewMode === 'grid' ? 'default' : 'outline'} size="sm" onClick={() => setViewMode('grid')} className={`text-xs sm:text-sm ${viewMode === 'grid' ? 'bg-green-600 hover:bg-green-700' : ''}`}>
-                            <Grid className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
+                        <Button 
+                            variant={viewMode === 'grid' ? 'default' : 'outline'} 
+                            size="sm" 
+                            onClick={() => setViewMode('grid')} 
+                            className={`transition-all duration-200 ${viewMode === 'grid' ? 'bg-green-600 hover:bg-green-700 shadow-md' : ''}`}
+                        >
+                            <Grid className="h-4 w-4 mr-2" />
                             <span className="hidden sm:inline">Grille</span>
                         </Button>
-                        <Button variant={viewMode === 'list' ? 'default' : 'outline'} size="sm" onClick={() => setViewMode('list')} className={`text-xs sm:text-sm ${viewMode === 'list' ? 'bg-green-600 hover:bg-green-700' : ''}`}>
-                            <List className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
+                        <Button 
+                            variant={viewMode === 'list' ? 'default' : 'outline'} 
+                            size="sm" 
+                            onClick={() => setViewMode('list')} 
+                            className={`transition-all duration-200 ${viewMode === 'list' ? 'bg-green-600 hover:bg-green-700 shadow-md' : ''}`}
+                        >
+                            <List className="h-4 w-4 mr-2" />
                             <span className="hidden sm:inline">Liste</span>
                         </Button>
                     </div>
                     {productsData && (
-                        <p className="text-xs sm:text-sm text-gray-600">
+                        <p className="text-xs md:text-sm text-gray-600">
                             {productsData.total} produit{productsData.total > 1 ? 's' : ''}
                         </p>
                     )}
                 </div>
 
                 {/* Products Grid/List */}
-                <div>
+                <div className="transition-all duration-300">
                         {isLoading ? (
-                            <div className={viewMode === 'grid' ? 'grid md:grid-cols-2 xl:grid-cols-3 gap-6' : 'space-y-4'}>
-                                {Array.from({ length: 9 }).map((_, i) => (
-                                    <Card key={i} className="overflow-hidden">
-                                        <Skeleton className="h-64 w-full" />
-                                        <div className="p-6 space-y-3">
+                        <div className={viewMode === 'grid' ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6' : 'space-y-4'}>
+                            {Array.from({ length: 12 }).map((_, i) => (
+                                <Card key={i} className="overflow-hidden border-none shadow-md">
+                                    <Skeleton className="h-40 md:h-48 w-full" />
+                                    <div className="p-4 md:p-5 space-y-3">
                                             <Skeleton className="h-4 w-24" />
-                                            <Skeleton className="h-6 w-full" />
+                                        <Skeleton className="h-5 w-full" />
                                             <Skeleton className="h-8 w-32" />
                                             <Skeleton className="h-10 w-full" />
                                         </div>
@@ -162,67 +243,119 @@ export default function ProductsPage() {
                                 ))}
                             </div>
                         ) : productsData?.products && productsData.products.length > 0 ? (
-                            <div className={viewMode === 'grid' ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6' : 'space-y-3 sm:space-y-4'}>
+                        <div className={viewMode === 'grid' 
+                            ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6' 
+                            : 'space-y-3 md:space-y-4'
+                        }>
                                 {productsData.products.map((product) => {
                                     const isFavorite = favorites.some(f => f.id === product.id);
                                     const variant = product.variants && product.variants.length > 0 ? product.variants[0] : null;
                                     return (
-                                        <Card key={product.id} className="group overflow-hidden hover:shadow-xl sm:hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 border-none bg-white">
+                                    <Card 
+                                        key={product.id} 
+                                        className="group overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border-none bg-white shadow-sm"
+                                    >
                                             {viewMode === 'grid' ? (
                                                 <>
-                                                    <div className="relative h-48 sm:h-56 md:h-64 overflow-hidden bg-gradient-to-br from-green-50 to-emerald-50">
-                                                        <img src={product.Image} alt={product.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
-                                                        <Button size="icon" variant="secondary" className="absolute top-2 sm:top-3 md:top-4 right-2 sm:right-3 md:right-4 rounded-full bg-white/90 hover:bg-white h-8 w-8 sm:h-9 sm:w-9 md:h-10 md:w-10" onClick={() => toggleFavorite(product)}>
-                                                            <Heart className={`h-3 w-3 sm:h-4 sm:w-4 ${isFavorite ? 'fill-red-500 text-red-500' : ''}`} />
-                                                        </Button>
-                                                        <Badge className="absolute bottom-2 sm:bottom-3 md:bottom-4 left-2 sm:left-3 md:left-4 bg-green-600 text-xs">{product.category}</Badge>
+                                                <div className="relative h-40 md:h-48 overflow-hidden bg-gradient-to-br from-green-50 to-emerald-50">
+                                                    <img 
+                                                        src={product.Image} 
+                                                        alt={product.title} 
+                                                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 ease-out" 
+                                                        loading="lazy"
+                                                    />
+                                                    <Button 
+                                                        size="icon" 
+                                                        variant="secondary" 
+                                                        className="absolute top-2 right-2 rounded-full bg-white/90 hover:bg-white h-8 w-8 md:h-9 md:w-9 shadow-md transition-all duration-200 hover:scale-110" 
+                                                        onClick={() => toggleFavorite(product)}
+                                                    >
+                                                        <Heart className={`h-4 w-4 transition-all duration-200 ${isFavorite ? 'fill-red-500 text-red-500 scale-110' : ''}`} />
+                                                    </Button>
+                                                    <Badge className="absolute bottom-2 left-2 bg-green-600 text-xs shadow-md">{product.category}</Badge>
+                                                </div>
+                                                <div className="p-4 md:p-5">
+                                                    <h3 className="font-semibold text-sm md:text-base mb-2 line-clamp-2 group-hover:text-green-600 transition-colors duration-200">
+                                                        {product.title}
+                                                    </h3>
+                                                    <div className="flex items-center justify-between mb-3">
+                                                        <span className="text-lg md:text-xl font-bold text-green-600">
+                                                            {formatPrice(variant?.price || 0)}
+                                                        </span>
+                                                        <span className="text-xs text-gray-500">
+                                                            {variant ? getVariantDisplay(variant) : 'unité'}
+                                                        </span>
                                                     </div>
-                                                    <div className="p-4 sm:p-5 md:p-6">
-                                                        <h3 className="font-semibold text-sm sm:text-base md:text-lg mb-2 line-clamp-2 group-hover:text-green-600 transition">{product.title}</h3>
-                                                        <div className="flex items-center justify-between mb-3 sm:mb-4">
-                                                            <span className="text-lg sm:text-xl md:text-2xl font-bold text-green-600">{formatPrice(variant?.price || 0)}</span>
-                                                            <span className="text-xs sm:text-sm text-gray-500">{variant ? getVariantDisplay(variant) : 'unité'}</span>
+                                                    <div className="flex gap-2">
+                                                        <Button 
+                                                            className="flex-1 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-xs md:text-sm transition-all duration-200 hover:scale-105 active:scale-95" 
+                                                            onClick={() => handleAddToCart(product)}
+                                                        >
+                                                            <ShoppingCart className="mr-2 h-4 w-4" />
+                                                            <span className="hidden sm:inline">Ajouter</span>
+                                                            <span className="sm:hidden">+</span>
+                                                        </Button>
+                                                        <Link href={`/products/${product.id}`}>
+                                                            <Button 
+                                                                variant="outline" 
+                                                                size="sm" 
+                                                                className="text-xs md:text-sm transition-all duration-200 hover:scale-105 active:scale-95"
+                                                            >
+                                                                Voir
+                                                            </Button>
+                                                        </Link>
+                                                    </div>
+                                                </div>
+                                            </>
+                                        ) : (
+                                            <div className="flex flex-col sm:flex-row gap-4 p-4 md:p-6">
+                                                <div className="relative w-full sm:w-32 md:w-40 h-40 sm:h-32 md:h-40 flex-shrink-0 rounded-lg overflow-hidden bg-gradient-to-br from-green-50 to-emerald-50">
+                                                    <img 
+                                                        src={product.Image} 
+                                                        alt={product.title} 
+                                                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" 
+                                                        loading="lazy"
+                                                    />
+                                                    <Badge className="absolute top-2 left-2 bg-green-600 text-xs shadow-md">{product.category}</Badge>
+                                                </div>
+                                                <div className="flex-1 flex flex-col justify-between gap-3">
+                                                    <div className="space-y-2">
+                                                        <h3 className="text-base md:text-lg font-semibold leading-tight group-hover:text-green-600 transition-colors duration-200">
+                                                            {product.title}
+                                                        </h3>
+                                                        {product.description && (
+                                                            <p className="text-gray-600 text-xs md:text-sm line-clamp-2">
+                                                                {product.description}
+                                                            </p>
+                                                        )}
+                                                    </div>
+                                                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                                                        <div className="flex items-center gap-2">
+                                                            <span className="text-xl md:text-2xl font-bold text-green-600">
+                                                                {formatPrice(variant?.price || 0)}
+                                                            </span>
+                                                            <span className="text-xs md:text-sm text-gray-500">
+                                                                / {variant ? getVariantDisplay(variant) : 'unité'}
+                                                            </span>
                                                         </div>
                                                         <div className="flex gap-2">
-                                                            <Button className="flex-1 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-xs sm:text-sm" onClick={() => handleAddToCart(product)}>
-                                                                <ShoppingCart className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" />
+                                                            <Button 
+                                                                size="icon" 
+                                                                variant="outline" 
+                                                                className="h-9 w-9 md:h-10 md:w-10 transition-all duration-200 hover:scale-110" 
+                                                                onClick={() => toggleFavorite(product)}
+                                                            >
+                                                                <Heart className={`h-4 w-4 transition-all duration-200 ${isFavorite ? 'fill-red-500 text-red-500 scale-110' : ''}`} />
+                                                            </Button>
+                                                            <Button 
+                                                                className="flex-1 sm:flex-initial bg-gradient-to-r from-green-600 to-emerald-600 text-xs md:text-sm transition-all duration-200 hover:scale-105 active:scale-95" 
+                                                                onClick={() => handleAddToCart(product)}
+                                                            >
+                                                                <ShoppingCart className="mr-2 h-4 w-4" />
                                                                 <span className="hidden sm:inline">Ajouter</span>
                                                                 <span className="sm:hidden">+</span>
                                                             </Button>
-                                                            <Link href={`/products/${product.id}`}>
-                                                                <Button variant="outline" size="sm" className="text-xs sm:text-sm">Voir</Button>
-                                                            </Link>
                                                         </div>
-                                                    </div>
-                                                </>
-                                            ) : (
-                                                <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 p-4 sm:p-6">
-                                                    <div className="relative w-full sm:w-32 md:w-40 lg:w-48 h-48 sm:h-32 md:h-40 lg:h-48 flex-shrink-0 rounded-lg overflow-hidden bg-gradient-to-br from-green-50 to-emerald-50">
-                                                        <img src={product.Image} alt={product.title} className="w-full h-full object-cover" />
-                                                        <Badge className="absolute top-2 left-2 bg-green-600 text-xs">{product.category}</Badge>
-                                                    </div>
-                                                    <div className="flex-1 flex flex-col justify-between gap-3 sm:gap-4">
-                                                        <div className="space-y-2">
-                                                            <h3 className="text-base sm:text-lg md:text-xl font-semibold leading-tight">{product.title}</h3>
-                                                            {product.description && (
-                                                                <p className="text-gray-600 text-xs sm:text-sm line-clamp-2">{product.description}</p>
-                                                            )}
-                                                        </div>
-                                                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
-                                                            <div className="flex items-center gap-2">
-                                                                <span className="text-xl sm:text-2xl md:text-3xl font-bold text-green-600">{formatPrice(variant?.price || 0)}</span>
-                                                                <span className="text-xs sm:text-sm text-gray-500">/ {variant ? getVariantDisplay(variant) : 'unité'}</span>
-                                                            </div>
-                                                            <div className="flex gap-2">
-                                                                <Button size="icon" variant="outline" className="h-9 w-9 sm:h-10 sm:w-10" onClick={() => toggleFavorite(product)}>
-                                                                    <Heart className={`h-4 w-4 ${isFavorite ? 'fill-red-500 text-red-500' : ''}`} />
-                                                                </Button>
-                                                                <Button className="flex-1 sm:flex-initial bg-gradient-to-r from-green-600 to-emerald-600 text-xs sm:text-sm" onClick={() => handleAddToCart(product)}>
-                                                                    <ShoppingCart className="mr-2 h-3 w-3 sm:h-4 sm:w-4" />
-                                                                    <span className="hidden sm:inline">Ajouter au panier</span>
-                                                                    <span className="sm:hidden">Ajouter</span>
-                                                                </Button>
-                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -238,20 +371,22 @@ export default function ProductsPage() {
                                 </div>
                                 <h3 className="text-2xl font-bold text-gray-900 mb-2">Aucun produit trouvé</h3>
                                 <p className="text-gray-600 mb-6">Essayez de modifier vos filtres ou votre recherche</p>
-                                <Button onClick={() => { setSearch(''); setSelectedCategory(null); }} variant="outline">Réinitialiser les filtres</Button>
+                            <Button onClick={clearFilters} variant="outline" className="transition-all duration-200 hover:scale-105">
+                                Réinitialiser les filtres
+                            </Button>
                             </Card>
                         )}
 
                         {/* Pagination */}
                         {productsData && productsData.totalPages > 1 && (
-                            <div className="mt-12 space-y-4">
+                        <div className="mt-8 md:mt-12 space-y-4">
                                 <div className="flex items-center justify-center gap-2 flex-wrap">
                                     <Button
                                         variant="outline"
                                         size="sm"
                                         onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
                                         disabled={currentPage === 1 || isLoading}
-                                        className="flex items-center gap-2"
+                                    className="flex items-center gap-2 transition-all duration-200 hover:scale-105 disabled:opacity-50"
                                     >
                                         <ChevronLeft className="h-4 w-4" />
                                         Précédent
@@ -264,19 +399,16 @@ export default function ProductsPage() {
                                             const current = currentPage;
                                             
                                             if (totalPages <= 7) {
-                                                // Show all pages if 7 or fewer
                                                 for (let i = 1; i <= totalPages; i++) {
                                                     pages.push(i);
                                                 }
                                             } else {
-                                                // Show first page
                                                 pages.push(1);
                                                 
                                                 if (current > 3) {
                                                     pages.push('...');
                                                 }
                                                 
-                                                // Show pages around current
                                                 const start = Math.max(2, current - 1);
                                                 const end = Math.min(totalPages - 1, current + 1);
                                                 
@@ -290,7 +422,6 @@ export default function ProductsPage() {
                                                     pages.push('...');
                                                 }
                                                 
-                                                // Show last page
                                                 pages.push(totalPages);
                                             }
                                             
@@ -309,7 +440,11 @@ export default function ProductsPage() {
                                                         variant={currentPage === page ? 'default' : 'outline'}
                                                         size="sm"
                                                         onClick={() => setCurrentPage(page as number)}
-                                                        className={currentPage === page ? 'bg-green-600 hover:bg-green-700 text-white' : ''}
+                                                    className={`transition-all duration-200 hover:scale-110 ${
+                                                        currentPage === page 
+                                                            ? 'bg-green-600 hover:bg-green-700 text-white shadow-md' 
+                                                            : ''
+                                                    }`}
                                                     >
                                                         {page}
                                                     </Button>
@@ -323,14 +458,13 @@ export default function ProductsPage() {
                                         size="sm"
                                         onClick={() => setCurrentPage(prev => Math.min(productsData.totalPages, prev + 1))}
                                         disabled={currentPage === productsData.totalPages || isLoading}
-                                        className="flex items-center gap-2"
+                                    className="flex items-center gap-2 transition-all duration-200 hover:scale-105 disabled:opacity-50"
                                     >
                                         Suivant
                                         <ChevronRight className="h-4 w-4" />
                                     </Button>
                                 </div>
 
-                                {/* Page Info */}
                                 <div className="text-center text-sm text-gray-600">
                                     Page {productsData.currentPage} sur {productsData.totalPages} • {productsData.total} produits au total
                                 </div>
