@@ -260,6 +260,7 @@ export default function CheckoutPage() {
             await ordersApi.createOrder({
                 ...orderData,
                 status: 'payé',
+                paymentMethod: 'stripe',
             });
             // Show success message
             toast.success('✅ Paiement réussi! Votre commande a été confirmée.', {
@@ -291,6 +292,7 @@ export default function CheckoutPage() {
             await ordersApi.createOrder({
                 ...orderData,
                 status: 'payé',
+                paymentMethod: 'paypal',
             });
             // Show success message
             toast.success('✅ Paiement PayPal réussi! Votre commande a été confirmée.', {
