@@ -9,7 +9,7 @@ export const CATEGORIES = [
     { id: 'fruits-exotiques', name: 'Fruits exotiques', description: 'Fruits exotiques', image: 'https://images.pexels.com/photos/1435904/pexels-photo-1435904.jpeg' },
     { id: 'fruits-rouges', name: 'Fruits rouges', description: 'Fruits rouges', image: 'https://images.pexels.com/photos/89778/strawberries-frisch-ripe-sweet-89778.jpeg' },
     { id: 'fruits-secs', name: 'Fruits secs', description: 'Fruits secs', image: 'https://cms-cdn.lafourche.fr/c28db269-c629-4cb9-90e5-85b5d943a9d3_maksim-shutov-pUa1On18Jno-unsplash.jpg?rect=0%2C0%2C5760%2C3840&w=5760&h=3840' },
-    { id: 'herbes', name: 'Herbes armonique', description: 'Herbes aromatiques', image: 'https://images.unsplash.com/photo-1618375569909-82c3d88025f1?w=800&h=600&fit=crop' },
+    { id: 'herbes', name: 'Herbes armonique', description: 'Herbes aromatiques', image: 'https://i.notretemps.com/1200x0/smart/2019/05/09/herbes-vertes.jpg' },
     { id: 'jus', name: 'Jus De Fruits', description: 'Jus de fruits frais', image: 'https://images.pexels.com/photos/96974/pexels-photo-96974.jpeg' },
     { id: 'legumes', name: 'Légumes', description: 'Légumes frais', image: 'https://images.pexels.com/photos/143133/pexels-photo-143133.jpeg' },
     { id: 'produits-laitiers', name: 'Produits laitiers', description: 'Produits laitiers', image: 'https://images.pexels.com/photos/236010/pexels-photo-236010.jpeg' },
