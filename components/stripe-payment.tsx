@@ -8,7 +8,7 @@ import { Loader2 } from 'lucide-react';
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
 
-function StripeCheckoutForm({ amount, onSuccess }: { amount: number; onSuccess: () => void }) {
+function StripeCheckoutForm({ amount, onSuccess, clientSecret }: { amount: number; onSuccess: () => void; clientSecret: string }) {
     const stripe = useStripe();
     const elements = useElements();
     const [isProcessing, setIsProcessing] = useState(false);
@@ -25,19 +25,53 @@ function StripeCheckoutForm({ amount, onSuccess }: { amount: number; onSuccess: 
         setErrorMessage('');
 
         try {
-            const { error } = await stripe.confirmPayment({
-                elements,
-                redirect: 'if_required',
-            });
+            // First, retrieve the payment intent to check its status
+            const { paymentIntent, error: retrieveError } = await stripe.retrievePaymentIntent(clientSecret);
 
-            if (error) {
-                setErrorMessage(error.message || 'Une erreur est survenue');
-            } else {
-                // Payment successful - call onSuccess which will handle cart clearing and redirect
+            if (retrieveError) {
+                setErrorMessage(retrieveError.message || 'Erreur lors de la récupération du paiement');
+                setIsProcessing(false);
+                return;
+            }
+
+            // If payment is already succeeded, call onSuccess directly
+            if (paymentIntent && paymentIntent.status === 'succeeded') {
                 onSuccess();
+                setIsProcessing(false);
+                return;
+            }
+
+            // If payment is processing, don't try to confirm again
+            if (paymentIntent && paymentIntent.status === 'processing') {
+                setErrorMessage('Le paiement est en cours de traitement. Veuillez patienter...');
+                setIsProcessing(false);
+                return;
+            }
+
+            // Only confirm if the payment intent is in a state that can be confirmed
+            if (paymentIntent && (paymentIntent.status === 'requires_payment_method' || paymentIntent.status === 'requires_confirmation')) {
+                const { error } = await stripe.confirmPayment({
+                    elements,
+                    redirect: 'if_required',
+                });
+
+                if (error) {
+                    setErrorMessage(error.message || 'Une erreur est survenue');
+                } else {
+                    // Payment successful - call onSuccess which will handle cart clearing and redirect
+                    onSuccess();
+                }
+            } else if (paymentIntent && paymentIntent.status !== 'succeeded' && paymentIntent.status !== 'processing') {
+                // Payment is in an unexpected state
+                setErrorMessage('Le paiement est dans un état inattendu. Veuillez réessayer.');
             }
         } catch (err: any) {
-            setErrorMessage(err.message || 'Une erreur est survenue');
+            // If error is about already succeeded, treat it as success
+            if (err.code === 'payment_intent_unexpected_state' && err.payment_intent?.status === 'succeeded') {
+                onSuccess();
+            } else {
+                setErrorMessage(err.message || 'Une erreur est survenue');
+            }
         } finally {
             setIsProcessing(false);
         }
@@ -90,7 +124,7 @@ export function StripePayment({
 
     return (
         <Elements stripe={stripePromise} options={options}>
-            <StripeCheckoutForm amount={amount} onSuccess={onSuccess} />
+            <StripeCheckoutForm amount={amount} onSuccess={onSuccess} clientSecret={clientSecret} />
         </Elements>
     );
 }
