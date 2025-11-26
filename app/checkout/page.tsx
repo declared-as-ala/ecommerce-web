@@ -226,9 +226,16 @@ export default function CheckoutPage() {
                     paymentMethod: 'espèces'
                 });
 
-                toast.success('Commande créée! Vous paierez à la livraison.');
+                // Show success message
+                toast.success('✅ Commande créée avec succès! Vous paierez à la livraison.', {
+                    duration: 4000,
+                });
+                // Clear cart
                 clearCart();
-                router.push('/orders');
+                // Small delay to show the success message before redirect
+                setTimeout(() => {
+                    router.push('/orders');
+                }, 500);
 
             } else if (data.paymentMethod === 'stripe') {
                 const { clientSecret } = await paymentsApi.createStripePayment(orderData);
@@ -254,9 +261,16 @@ export default function CheckoutPage() {
                 ...orderData,
                 status: 'payé',
             });
-            toast.success('Paiement réussi!');
+            // Show success message
+            toast.success('✅ Paiement réussi! Votre commande a été confirmée.', {
+                duration: 4000,
+            });
+            // Clear cart
             clearCart();
-            router.push('/orders');
+            // Small delay to show the success message before redirect
+            setTimeout(() => {
+                router.push('/orders');
+            }, 500);
         } catch (error) {
             toast.error('Erreur lors de la création de la commande');
         }
@@ -272,9 +286,22 @@ export default function CheckoutPage() {
     const handlePayPalApprove = async (data: any) => {
         try {
             await paymentsApi.capturePayPalPayment(data.orderID);
-            toast.success('Paiement PayPal réussi!');
+            const formData = watch();
+            const orderData = createOrderData(formData);
+            await ordersApi.createOrder({
+                ...orderData,
+                status: 'payé',
+            });
+            // Show success message
+            toast.success('✅ Paiement PayPal réussi! Votre commande a été confirmée.', {
+                duration: 4000,
+            });
+            // Clear cart
             clearCart();
-            router.push('/orders');
+            // Small delay to show the success message before redirect
+            setTimeout(() => {
+                router.push('/orders');
+            }, 500);
         } catch (error) {
             console.error('PayPal Capture Error:', error);
             toast.error('Erreur lors de la confirmation du paiement PayPal');

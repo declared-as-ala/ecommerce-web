@@ -27,14 +27,13 @@ function StripeCheckoutForm({ amount, onSuccess }: { amount: number; onSuccess: 
         try {
             const { error } = await stripe.confirmPayment({
                 elements,
-                confirmParams: {
-                    return_url: `${window.location.origin}/orders`,
-                },
+                redirect: 'if_required',
             });
 
             if (error) {
                 setErrorMessage(error.message || 'Une erreur est survenue');
             } else {
+                // Payment successful - call onSuccess which will handle cart clearing and redirect
                 onSuccess();
             }
         } catch (err: any) {
