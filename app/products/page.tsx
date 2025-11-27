@@ -16,6 +16,7 @@ import { formatPrice, getVariantDisplay } from '@/lib/utils';
 import { CATEGORIES } from '@/lib/constants';
 import { toast } from 'sonner';
 import { ProductImage } from '@/components/ProductImage';
+import { CategoryFilter } from '@/components/CategoryFilter';
 
 // Debounce hook for search
 function useDebounce<T>(value: T, delay: number): T {
@@ -60,11 +61,6 @@ export default function ProductsPage() {
         setCurrentPage(1);
     }, [selectedCategory, debouncedSearch]);
 
-    // Get category image from constants
-    const getCategoryImage = useCallback((categoryName: string) => {
-        const category = CATEGORIES.find(cat => cat.name === categoryName);
-        return category?.image || 'https://images.pexels.com/photos/1092730/pexels-photo-1092730.jpeg';
-    }, []);
 
     const handleAddToCart = useCallback((product: any) => {
         const defaultVariant = product.variants[0];
@@ -128,74 +124,16 @@ export default function ProductsPage() {
                         </div>
                     </div>
                     
-                    {/* Categories - Smooth Scrollable */}
-                    <div className="mb-4 md:mb-6">
-                        <div className="flex items-center justify-between mb-3">
-                            <h2 className="text-sm font-semibold text-gray-700">Catégories</h2>
-                            {hasActiveFilters && (
-                                <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    onClick={clearFilters}
-                                    className="text-xs text-gray-600 hover:text-gray-900"
-                                >
-                                    <X className="h-3 w-3 mr-1" />
-                                    Réinitialiser
-                                </Button>
-                            )}
-                        </div>
-                        <div className="overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-green-600 scrollbar-track-gray-100 scrollbar-thumb-rounded-full">
-                            <div className="flex gap-2 md:gap-3 min-w-max">
-                                <button
-                                    onClick={() => {
-                                        setSelectedCategory(null);
-                                        setCurrentPage(1);
-                                    }}
-                                    className={`flex-shrink-0 flex flex-col items-center gap-1.5 px-3 py-2.5 rounded-xl transition-all duration-300 border-2 min-w-[80px] md:min-w-[100px] shadow-sm transform hover:scale-105 active:scale-95 ${
-                                        !selectedCategory 
-                                            ? 'bg-gradient-to-br from-green-50 to-emerald-50 border-green-500 text-green-700 font-medium shadow-md' 
-                                            : 'border-gray-200 hover:border-green-300 hover:bg-green-50/50 text-gray-700 bg-white hover:shadow-md'
-                                    }`}
-                                >
-                                    <div className={`w-10 h-10 md:w-12 md:h-12 rounded-xl bg-gradient-to-br from-green-400 to-emerald-500 flex items-center justify-center text-white font-bold text-xs shadow-lg transition-transform duration-300 ${!selectedCategory ? 'scale-110' : ''}`}>
-                                        Tous
-                                    </div>
-                                    <span className="text-[10px] md:text-xs font-semibold text-center">Tous</span>
-                                </button>
-                                {CATEGORIES.map((cat) => (
-                                    <button
-                                        key={cat.id}
-                                        onClick={() => {
-                                            setSelectedCategory(cat.name);
-                                            setCurrentPage(1);
-                                        }}
-                                        className={`flex-shrink-0 flex flex-col items-center gap-1.5 px-3 py-2.5 rounded-xl transition-all duration-300 border-2 min-w-[80px] md:min-w-[100px] shadow-sm transform hover:scale-105 active:scale-95 ${
-                                            selectedCategory === cat.name 
-                                                ? 'bg-gradient-to-br from-green-50 to-emerald-50 border-green-500 shadow-md' 
-                                                : 'border-gray-200 hover:border-green-300 hover:shadow-md bg-white'
-                                        }`}
-                                    >
-                                        <div className={`relative w-10 h-10 md:w-12 md:h-12 rounded-xl overflow-hidden shadow-md transition-transform duration-300 ${selectedCategory === cat.name ? 'scale-110' : ''}`}>
-                                            <img
-                                                src={getCategoryImage(cat.name)}
-                                                alt={cat.name}
-                                                className="w-full h-full object-cover"
-                                                loading="lazy"
-                                            />
-                                            {selectedCategory === cat.name && (
-                                                <div className="absolute inset-0 bg-green-500/30 ring-2 ring-green-500 rounded-xl animate-pulse" />
-                                            )}
-                                        </div>
-                                        <span className={`text-[10px] md:text-xs font-semibold text-center line-clamp-2 w-full transition-colors duration-200 ${
-                                            selectedCategory === cat.name ? 'text-green-700' : 'text-gray-700'
-                                        }`}>
-                                            {cat.name}
-                                        </span>
-                                    </button>
-                                ))}
-                            </div>
-                        </div>
-                    </div>
+                    {/* Categories - Optimized Scrollable Filter */}
+                    <CategoryFilter
+                        selectedCategory={selectedCategory}
+                        onCategoryChange={(category) => {
+                            setSelectedCategory(category);
+                            setCurrentPage(1);
+                        }}
+                        onClearFilters={clearFilters}
+                        hasActiveFilters={hasActiveFilters}
+                    />
                 </div>
 
                 {/* View Mode Toggle & Results Count */}
