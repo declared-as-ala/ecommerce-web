@@ -85,7 +85,7 @@ export default function ProductsPage() {
         setCurrentPage(1);
     }, []);
 
-    const hasActiveFilters = search || selectedCategory;
+    const hasActiveFilters = Boolean(search || selectedCategory);
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-green-50">
