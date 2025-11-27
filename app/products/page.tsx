@@ -15,6 +15,7 @@ import { Search, Heart, ShoppingCart, Grid, List, ChevronRight, ChevronLeft, X, 
 import { formatPrice, getVariantDisplay } from '@/lib/utils';
 import { CATEGORIES } from '@/lib/constants';
 import { toast } from 'sonner';
+import { ProductImage } from '@/components/ProductImage';
 
 // Debounce hook for search
 function useDebounce<T>(value: T, delay: number): T {
@@ -258,11 +259,11 @@ export default function ProductsPage() {
                                             {viewMode === 'grid' ? (
                                                 <>
                                                 <div className="relative h-40 md:h-48 overflow-hidden bg-gradient-to-br from-green-50 to-emerald-50">
-                                                    <img 
-                                                        src={product.Image} 
-                                                        alt={product.title} 
-                                                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 ease-out" 
-                                                        loading="lazy"
+                                                    <ProductImage
+                                                        src={product.Image}
+                                                        alt={product.title}
+                                                        fill
+                                                        className="group-hover:scale-110 transition-transform duration-500 ease-out"
                                                     />
                                                     <Button 
                                                         size="icon" 
@@ -310,11 +311,11 @@ export default function ProductsPage() {
                                         ) : (
                                             <div className="flex flex-col sm:flex-row gap-4 p-4 md:p-6">
                                                 <div className="relative w-full sm:w-32 md:w-40 h-40 sm:h-32 md:h-40 flex-shrink-0 rounded-lg overflow-hidden bg-gradient-to-br from-green-50 to-emerald-50">
-                                                    <img 
-                                                        src={product.Image} 
-                                                        alt={product.title} 
-                                                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" 
-                                                        loading="lazy"
+                                                    <ProductImage
+                                                        src={product.Image}
+                                                        alt={product.title}
+                                                        fill
+                                                        className="group-hover:scale-110 transition-transform duration-500"
                                                     />
                                                     <Badge className="absolute top-2 left-2 bg-green-600 text-xs shadow-md">{product.category}</Badge>
                                                 </div>

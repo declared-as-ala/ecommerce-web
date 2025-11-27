@@ -15,6 +15,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { ArrowLeft, ShoppingCart, Heart, Minus, Plus, Package, Shield, Truck, Star } from 'lucide-react';
 import { formatPrice, getVariantDisplay } from '@/lib/utils';
 import { toast } from 'sonner';
+import { ProductImage } from '@/components/ProductImage';
 
 export default function ProductDetailPage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = use(params);
@@ -121,10 +122,10 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
                     <div className="space-y-4">
                         <Card className="overflow-hidden border-none shadow-2xl">
                             <div className="relative aspect-square bg-gradient-to-br from-green-50 to-emerald-50">
-                                <img
+                                <ProductImage
                                     src={product.Image}
                                     alt={product.title}
-                                    className="w-full h-full object-cover"
+                                    fill
                                 />
                                 <Button
                                     size="icon"

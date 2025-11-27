@@ -12,6 +12,7 @@ import { useStore } from '@/lib/store';
 import { formatPrice } from '@/lib/utils';
 import { CATEGORIES } from '@/lib/constants';
 import { toast } from 'sonner';
+import { ProductImage } from '@/components/ProductImage';
 
 export default function HomePage() {
   const [mounted, setMounted] = useState(false);
@@ -306,10 +307,11 @@ export default function HomePage() {
                     >
                       <Card className="group overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-2 border-none bg-white cursor-pointer h-full">
                         <div className="relative h-32 sm:h-40 md:h-48 overflow-hidden bg-gradient-to-br from-green-50 to-emerald-50">
-                          <img
+                          <ProductImage
                             src={product.Image}
                             alt={product.title}
-                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                            fill
+                            className="group-hover:scale-110 transition-transform duration-500"
                           />
                           <div className="absolute top-2 sm:top-3 right-2 sm:right-3">
                             <Button 

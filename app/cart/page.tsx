@@ -8,6 +8,7 @@ import { Card } from '@/components/ui/card';
 import { ShoppingCart, Trash2, Plus, Minus, ArrowRight, ShoppingBag } from 'lucide-react';
 import { formatPrice, getVariantDisplay } from '@/lib/utils';
 import { toast } from 'sonner';
+import { ProductImage } from '@/components/ProductImage';
 
 export default function CartPage() {
     const router = useRouter();
@@ -77,7 +78,7 @@ export default function CartPage() {
                             <Card key={`${item.product.id}-${item.variant.variant_id}`} className="p-6 border-none shadow-lg">
                                 <div className="flex gap-6">
                                     <div className="w-24 h-24 rounded-lg overflow-hidden bg-gradient-to-br from-green-50 to-emerald-50 flex-shrink-0">
-                                        <img src={item.product.Image} alt={item.product.title} className="w-full h-full object-cover" />
+                                        <ProductImage src={item.product.Image} alt={item.product.title} fill />
                                     </div>
                                     <div className="flex-1">
                                         <h3 className="font-semibold text-lg mb-1">{item.product.title}</h3>

@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { Heart, ShoppingCart, Trash2 } from 'lucide-react';
 import { formatPrice, getVariantDisplay } from '@/lib/utils';
 import { toast } from 'sonner';
+import { ProductImage } from '@/components/ProductImage';
 
 export default function FavoritesPage() {
     const { favorites, removeFromFavorites, addToCart, cart, isAuthenticated, user } = useStore();
@@ -95,10 +96,11 @@ export default function FavoritesPage() {
                             return (
                                 <Card key={product.id} className="group overflow-hidden hover:shadow-2xl transition-all hover:-translate-y-1 border-none">
                                     <div className="relative h-64 overflow-hidden bg-gradient-to-br from-red-50 to-pink-50">
-                                        <img
+                                        <ProductImage
                                             src={product.Image}
                                             alt={product.title}
-                                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                                            fill
+                                            className="group-hover:scale-110 transition-transform duration-500"
                                         />
                                         <Button
                                             size="icon"
