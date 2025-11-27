@@ -115,12 +115,10 @@ export const CategoryFilter = ({
         {/* Scrollable Categories */}
         <div
           ref={scrollContainerRef}
-          className="overflow-x-auto scrollbar-hide scroll-smooth pb-2"
+          className="overflow-x-auto scrollbar-hide scroll-smooth scroll-optimized pb-2"
           style={{
             scrollbarWidth: 'none',
             msOverflowStyle: 'none',
-            WebkitOverflowScrolling: 'touch',
-            willChange: 'scroll-position',
           }}
           onScroll={checkScrollPosition}
         >
