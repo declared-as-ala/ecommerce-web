@@ -348,46 +348,59 @@ export default function CheckoutPage() {
                 <div className="grid lg:grid-cols-3 gap-6 sm:gap-8">
                     <div className="lg:col-span-2 space-y-4 sm:space-y-6">
                         {!showPaymentUI ? (
-                            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 sm:space-y-6">
-                                {/* Step 1: Personal Info */}
-                                <Card className="p-4 sm:p-6 border-none shadow-lg">
-                                    <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 flex items-center">
-                                        <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-gradient-to-r from-green-600 to-emerald-600 text-white flex items-center justify-center mr-2 sm:mr-3 text-sm sm:text-base">1</div>
+                            <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+                                {/* Step 1: Personal Info - Enhanced */}
+                                <Card className="p-5 sm:p-7 border border-gray-200 shadow-xl rounded-2xl bg-white hover:shadow-2xl transition-shadow">
+                                    <h2 className="text-lg sm:text-xl font-bold mb-5 flex items-center text-gray-900">
+                                        <div className="w-8 h-8 rounded-full bg-gradient-to-r from-green-600 to-emerald-600 text-white flex items-center justify-center mr-3 text-sm font-bold shadow-md">1</div>
                                         Informations personnelles
                                     </h2>
-                                    <div className="grid sm:grid-cols-2 gap-3 sm:gap-4">
+                                    <div className="grid sm:grid-cols-2 gap-4">
                                         <div className="sm:col-span-2">
-                                            <Label htmlFor="fullName" className="text-sm sm:text-base">Nom complet *</Label>
-                                            <Input id="fullName" {...register('fullName')} className="mt-1 h-10 sm:h-11" />
-                                            {errors.fullName && <p className="text-red-600 text-xs sm:text-sm mt-1">{errors.fullName.message}</p>}
+                                            <Label htmlFor="fullName" className="text-sm font-semibold text-gray-700 mb-2 block">Nom complet *</Label>
+                                            <Input
+                                                id="fullName"
+                                                {...register('fullName')}
+                                                className="h-12 border-2 border-gray-200 focus:border-green-500 focus:ring-2 focus:ring-green-200 rounded-xl transition-all"
+                                            />
+                                            {errors.fullName && <p className="text-red-600 text-xs mt-1.5 flex items-center gap-1"><AlertCircle className="h-3 w-3" />{errors.fullName.message}</p>}
                                         </div>
                                         <div>
-                                            <Label htmlFor="email" className="text-sm sm:text-base">Email *</Label>
-                                            <Input id="email" type="email" {...register('email')} className="mt-1 h-10 sm:h-11" />
-                                            {errors.email && <p className="text-red-600 text-xs sm:text-sm mt-1">{errors.email.message}</p>}
+                                            <Label htmlFor="email" className="text-sm font-semibold text-gray-700 mb-2 block">Email *</Label>
+                                            <Input
+                                                id="email"
+                                                type="email"
+                                                {...register('email')}
+                                                className="h-12 border-2 border-gray-200 focus:border-green-500 focus:ring-2 focus:ring-green-200 rounded-xl transition-all"
+                                            />
+                                            {errors.email && <p className="text-red-600 text-xs mt-1.5 flex items-center gap-1"><AlertCircle className="h-3 w-3" />{errors.email.message}</p>}
                                         </div>
                                         <div>
-                                            <Label htmlFor="phone" className="text-sm sm:text-base">Téléphone *</Label>
-                                            <Input id="phone" {...register('phone')} className="mt-1 h-10 sm:h-11" />
-                                            {errors.phone && <p className="text-red-600 text-xs sm:text-sm mt-1">{errors.phone.message}</p>}
+                                            <Label htmlFor="phone" className="text-sm font-semibold text-gray-700 mb-2 block">Téléphone *</Label>
+                                            <Input
+                                                id="phone"
+                                                {...register('phone')}
+                                                className="h-12 border-2 border-gray-200 focus:border-green-500 focus:ring-2 focus:ring-green-200 rounded-xl transition-all"
+                                            />
+                                            {errors.phone && <p className="text-red-600 text-xs mt-1.5 flex items-center gap-1"><AlertCircle className="h-3 w-3" />{errors.phone.message}</p>}
                                         </div>
                                     </div>
                                 </Card>
 
-                                {/* Step 2: Delivery/Pickup */}
-                                <Card className="p-4 sm:p-6 border-none shadow-lg">
-                                    <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 flex items-center">
-                                        <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-gradient-to-r from-green-600 to-emerald-600 text-white flex items-center justify-center mr-2 sm:mr-3 text-sm sm:text-base">2</div>
+                                {/* Step 2: Delivery/Pickup - Enhanced */}
+                                <Card className="p-5 sm:p-7 border border-gray-200 shadow-xl rounded-2xl bg-white hover:shadow-2xl transition-shadow">
+                                    <h2 className="text-lg sm:text-xl font-bold mb-5 flex items-center text-gray-900">
+                                        <div className="w-8 h-8 rounded-full bg-gradient-to-r from-green-600 to-emerald-600 text-white flex items-center justify-center mr-3 text-sm font-bold shadow-md">2</div>
                                         Mode de réception
                                     </h2>
-                                    <RadioGroup 
-                                        value={pickupType} 
+                                    <RadioGroup
+                                        value={pickupType}
                                         onValueChange={(val) => {
                                             setValue('pickupType', val as any, { shouldValidate: false });
                                         }}
                                     >
                                         <div className="space-y-3">
-                                            <div 
+                                            <div
                                                 className={`flex items-center space-x-3 p-3 sm:p-4 border-2 rounded-lg cursor-pointer transition-all ${pickupType === 'store' ? 'border-green-500 bg-green-50' : 'border-gray-200 hover:border-green-300'}`}
                                                 onClick={() => setValue('pickupType', 'store', { shouldValidate: false })}
                                             >
@@ -400,7 +413,7 @@ export default function CheckoutPage() {
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div 
+                                            <div
                                                 className={`flex items-center space-x-3 p-3 sm:p-4 border-2 rounded-lg cursor-pointer transition-all ${pickupType === 'delivery' ? 'border-green-500 bg-green-50' : 'border-gray-200 hover:border-green-300'}`}
                                                 onClick={() => setValue('pickupType', 'delivery', { shouldValidate: false })}
                                             >
@@ -424,7 +437,10 @@ export default function CheckoutPage() {
                                             </h3>
                                             <RadioGroup value={watch('pickupLocation') || ''} onValueChange={(val) => setValue('pickupLocation', val)}>
                                                 <div className="space-y-3">
-                                                    <div className={`p-3 sm:p-4 border-2 rounded-xl cursor-pointer transition-all ${watch('pickupLocation') === 'vincennes' ? 'border-green-500 bg-green-50 shadow-md' : 'border-gray-200 hover:border-green-300 hover:shadow-sm'}`}>
+                                                    <div
+                                                        className={`p-3 sm:p-4 border-2 rounded-xl cursor-pointer transition-all ${watch('pickupLocation') === 'vincennes' ? 'border-green-500 bg-green-50 shadow-md' : 'border-gray-200 hover:border-green-300 hover:shadow-sm'}`}
+                                                        onClick={() => setValue('pickupLocation', 'vincennes')}
+                                                    >
                                                         <div className="flex items-start space-x-3">
                                                             <RadioGroupItem value="vincennes" id="vincennes" className="mt-1" />
                                                             <div className="flex-1">
@@ -439,7 +455,10 @@ export default function CheckoutPage() {
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    <div className={`p-3 sm:p-4 border-2 rounded-xl cursor-pointer transition-all ${watch('pickupLocation') === 'gournay' ? 'border-green-500 bg-green-50 shadow-md' : 'border-gray-200 hover:border-green-300 hover:shadow-sm'}`}>
+                                                    <div
+                                                        className={`p-3 sm:p-4 border-2 rounded-xl cursor-pointer transition-all ${watch('pickupLocation') === 'gournay' ? 'border-green-500 bg-green-50 shadow-md' : 'border-gray-200 hover:border-green-300 hover:shadow-sm'}`}
+                                                        onClick={() => setValue('pickupLocation', 'gournay')}
+                                                    >
                                                         <div className="flex items-start space-x-3">
                                                             <RadioGroupItem value="gournay" id="gournay" className="mt-1" />
                                                             <div className="flex-1">
@@ -454,7 +473,10 @@ export default function CheckoutPage() {
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    <div className={`p-3 sm:p-4 border-2 rounded-xl cursor-pointer transition-all ${watch('pickupLocation') === 'paris' ? 'border-green-500 bg-green-50 shadow-md' : 'border-gray-200 hover:border-green-300 hover:shadow-sm'}`}>
+                                                    <div
+                                                        className={`p-3 sm:p-4 border-2 rounded-xl cursor-pointer transition-all ${watch('pickupLocation') === 'paris' ? 'border-green-500 bg-green-50 shadow-md' : 'border-gray-200 hover:border-green-300 hover:shadow-sm'}`}
+                                                        onClick={() => setValue('pickupLocation', 'paris')}
+                                                    >
                                                         <div className="flex items-start space-x-3">
                                                             <RadioGroupItem value="paris" id="paris" className="mt-1" />
                                                             <div className="flex-1">
@@ -486,10 +508,10 @@ export default function CheckoutPage() {
                                                 <Label htmlFor="postalCode" className="text-sm sm:text-base">Code postal *</Label>
                                                 <Dialog open={showZonesModal} onOpenChange={setShowZonesModal}>
                                                     <DialogTrigger asChild>
-                                                        <Button 
-                                                            type="button" 
-                                                            variant="outline" 
-                                                            size="sm" 
+                                                        <Button
+                                                            type="button"
+                                                            variant="outline"
+                                                            size="sm"
                                                             className="text-xs sm:text-sm h-7 sm:h-8"
                                                         >
                                                             <Info className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
@@ -505,8 +527,8 @@ export default function CheckoutPage() {
                                                         </DialogHeader>
                                                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mt-4">
                                                             {DELIVERY_ZONES.map((zone) => (
-                                                                <div 
-                                                                    key={zone.code_postal} 
+                                                                <div
+                                                                    key={zone.code_postal}
                                                                     className="p-3 sm:p-4 border rounded-lg hover:border-green-500 hover:bg-green-50 transition-colors cursor-pointer"
                                                                     onClick={() => {
                                                                         setValue('postalCode', zone.code_postal);
@@ -579,59 +601,71 @@ export default function CheckoutPage() {
                                     )}
                                 </Card>
 
-                                {/* Step 3: Payment Selection */}
-                                <Card className="p-4 sm:p-6 border-none shadow-lg">
-                                    <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 flex items-center">
-                                        <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-gradient-to-r from-green-600 to-emerald-600 text-white flex items-center justify-center mr-2 sm:mr-3 text-sm sm:text-base">3</div>
+                                {/* Step 3: Payment Selection - Enhanced */}
+                                <Card className="p-5 sm:p-7 border border-gray-200 shadow-xl rounded-2xl bg-white hover:shadow-2xl transition-shadow">
+                                    <h2 className="text-lg sm:text-xl font-bold mb-5 flex items-center text-gray-900">
+                                        <div className="w-8 h-8 rounded-full bg-gradient-to-r from-green-600 to-emerald-600 text-white flex items-center justify-center mr-3 text-sm font-bold shadow-md">3</div>
                                         Paiement
                                     </h2>
-                                    <div className="flex items-center gap-2 mb-4 p-3 bg-green-50 rounded-lg">
-                                        <Shield className="h-4 w-4 sm:h-5 sm:w-5 text-green-600" />
-                                        <span className="text-xs sm:text-sm text-green-700 font-medium">Paiement 100% sécurisé</span>
+                                    <div className="flex items-center gap-2 mb-5 p-3 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl border border-green-200">
+                                        <Shield className="h-5 w-5 text-green-600" />
+                                        <span className="text-sm text-green-700 font-semibold">Paiement 100% sécurisé</span>
                                     </div>
 
                                     <RadioGroup value={paymentMethod} onValueChange={(val) => setValue('paymentMethod', val as any)}>
                                         <div className="space-y-3">
                                             {pickupType === 'store' && (
-                                                <div className={`flex items-center space-x-3 p-3 sm:p-4 border-2 rounded-lg cursor-pointer transition-all ${paymentMethod === 'espèces' ? 'border-green-500 bg-green-50' : 'border-gray-200 hover:border-green-300'}`}>
+                                                <div
+                                                    className={`flex items-center space-x-3 p-4 border-2 rounded-xl cursor-pointer transition-all ${paymentMethod === 'espèces' ? 'border-green-500 bg-green-50 shadow-md' : 'border-gray-200 hover:border-green-300 hover:shadow-sm'}`}
+                                                    onClick={() => setValue('paymentMethod', 'espèces')}
+                                                >
                                                     <RadioGroupItem value="espèces" id="cash-store" />
-                                                    <div className="flex-1 flex items-center gap-2 sm:gap-3">
-                                                        <Wallet className="h-5 w-5 sm:h-6 sm:w-6 text-green-600" />
+                                                    <div className="flex-1 flex items-center gap-3">
+                                                        <Wallet className="h-6 w-6 text-green-600" />
                                                         <div>
-                                                            <Label htmlFor="cash-store" className="cursor-pointer font-semibold text-sm sm:text-base">Espèces (au retrait)</Label>
-                                                            <p className="text-xs sm:text-sm text-gray-600">Payez directement au magasin</p>
+                                                            <Label htmlFor="cash-store" className="cursor-pointer font-semibold text-base">Espèces (au retrait)</Label>
+                                                            <p className="text-sm text-gray-600">Payez directement au magasin</p>
                                                         </div>
                                                     </div>
                                                 </div>
                                             )}
-                                            <div className={`flex items-center space-x-3 p-3 sm:p-4 border-2 rounded-lg cursor-pointer transition-all ${paymentMethod === 'stripe' ? 'border-green-500 bg-green-50' : 'border-gray-200 hover:border-green-300'}`}>
+                                            <div
+                                                className={`flex items-center space-x-3 p-4 border-2 rounded-xl cursor-pointer transition-all ${paymentMethod === 'stripe' ? 'border-green-500 bg-green-50 shadow-md' : 'border-gray-200 hover:border-green-300 hover:shadow-sm'}`}
+                                                onClick={() => setValue('paymentMethod', 'stripe')}
+                                            >
                                                 <RadioGroupItem value="stripe" id="stripe" />
-                                                <div className="flex-1 flex items-center gap-2 sm:gap-3">
-                                                    <CreditCard className="h-5 w-5 sm:h-6 sm:w-6 text-green-600" />
+                                                <div className="flex-1 flex items-center gap-3">
+                                                    <CreditCard className="h-6 w-6 text-green-600" />
                                                     <div>
-                                                        <Label htmlFor="stripe" className="cursor-pointer font-semibold text-sm sm:text-base">Carte bancaire</Label>
-                                                        <p className="text-xs sm:text-sm text-gray-600">Visa, Mastercard, etc.</p>
+                                                        <Label htmlFor="stripe" className="cursor-pointer font-semibold text-base">Carte bancaire</Label>
+                                                        <p className="text-sm text-gray-600">Visa, Mastercard, etc.</p>
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div className={`flex items-center space-x-3 p-3 sm:p-4 border-2 rounded-lg cursor-pointer transition-all ${paymentMethod === 'paypal' ? 'border-green-500 bg-green-50' : 'border-gray-200 hover:border-green-300'}`}>
+                                            <div
+                                                className={`flex items-center space-x-3 p-4 border-2 rounded-xl cursor-pointer transition-all ${paymentMethod === 'paypal' ? 'border-green-500 bg-green-50 shadow-md' : 'border-gray-200 hover:border-green-300 hover:shadow-sm'}`}
+                                                onClick={() => setValue('paymentMethod', 'paypal')}
+                                            >
                                                 <RadioGroupItem value="paypal" id="paypal" />
-                                                <div className="flex-1 flex items-center gap-2 sm:gap-3">
-                                                    <CreditCard className="h-5 w-5 sm:h-6 sm:w-6 text-green-600" />
+                                                <div className="flex-1 flex items-center gap-3">
+                                                    <CreditCard className="h-6 w-6 text-green-600" />
                                                     <div>
-                                                        <Label htmlFor="paypal" className="cursor-pointer font-semibold text-sm sm:text-base">PayPal</Label>
-                                                        <p className="text-xs sm:text-sm text-gray-600">Paiement sécurisé</p>
+                                                        <Label htmlFor="paypal" className="cursor-pointer font-semibold text-base">PayPal</Label>
+                                                        <p className="text-sm text-gray-600">Paiement sécurisé</p>
                                                     </div>
                                                 </div>
                                             </div>
                                             {pickupType === 'delivery' && (
-                                                <div className={`flex items-center space-x-3 p-3 sm:p-4 border-2 rounded-lg cursor-pointer transition-all ${paymentMethod === 'espèces' ? 'border-green-500 bg-green-50' : 'border-gray-200 hover:border-green-300'}`}>
+                                                <div
+                                                    className={`flex items-center space-x-3 p-4 border-2 rounded-xl cursor-pointer transition-all ${paymentMethod === 'espèces' ? 'border-green-500 bg-green-50 shadow-md' : 'border-gray-200 hover:border-green-300 hover:shadow-sm'}`}
+                                                    onClick={() => setValue('paymentMethod', 'espèces')}
+                                                >
                                                     <RadioGroupItem value="espèces" id="cash-delivery" />
-                                                    <div className="flex-1 flex items-center gap-2 sm:gap-3">
-                                                        <Wallet className="h-5 w-5 sm:h-6 sm:w-6 text-green-600" />
+                                                    <div className="flex-1 flex items-center gap-3">
+                                                        <Wallet className="h-6 w-6 text-green-600" />
                                                         <div>
-                                                            <Label htmlFor="cash-delivery" className="cursor-pointer font-semibold text-sm sm:text-base">Espèces (à la livraison)</Label>
-                                                            <p className="text-xs sm:text-sm text-gray-600">Payez à la réception</p>
+                                                            <Label htmlFor="cash-delivery" className="cursor-pointer font-semibold text-base">Espèces (à la livraison)</Label>
+                                                            <p className="text-sm text-gray-600">Payez à la réception</p>
                                                         </div>
                                                     </div>
                                                 </div>

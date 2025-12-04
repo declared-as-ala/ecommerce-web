@@ -239,17 +239,6 @@ export default function RegisterPage() {
                             )}
                         </div>
 
-                        <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-                            <div className="flex items-start space-x-3">
-                                <div className="flex-shrink-0">
-                                    <Check className="h-5 w-5 text-green-600 mt-0.5" />
-                                </div>
-                                <div className="text-sm text-green-800">
-                                    En créant un compte, vous bénéficiez de <span className="font-semibold">-10% sur votre première commande</span>
-                                </div>
-                            </div>
-                        </div>
-
                         <Button
                             type="submit"
                             disabled={isLoading}

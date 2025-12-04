@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useQuery } from '@tanstack/react-query';
 import { productsApi } from '@/lib/api/products';
 import { useStore } from '@/lib/store';
-import { ProductsHeader } from '@/components/products-header';
+import { Navbar } from '@/components/Navbar';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -89,7 +89,7 @@ export default function ProductsPage() {
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-green-50">
-            <ProductsHeader />
+            <Navbar />
 
             <div className="container mx-auto px-4 py-6 md:py-8">
                 {/* Header Section */}
@@ -97,13 +97,13 @@ export default function ProductsPage() {
                     <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
                         <div>
                             <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-2">
-                        Nos <span className="bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">Produits</span>
-                    </h1>
+                                Nos <span className="bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">Produits</span>
+                            </h1>
                             <p className="text-gray-600 text-sm md:text-base">
-                        {productsData?.total || 0} produits frais disponibles
-                    </p>
+                                {productsData?.total || 0} produits frais disponibles
+                            </p>
                         </div>
-                        
+
                         {/* Search Bar - Compact */}
                         <div className="relative max-w-md w-full md:w-auto">
                             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 md:h-5 md:w-5 text-gray-400" />
@@ -123,7 +123,7 @@ export default function ProductsPage() {
                             )}
                         </div>
                     </div>
-                    
+
                     {/* Categories - Optimized Scrollable Filter */}
                     <CategoryFilter
                         selectedCategory={selectedCategory}
@@ -139,19 +139,19 @@ export default function ProductsPage() {
                 {/* View Mode Toggle & Results Count */}
                 <div className="flex items-center justify-between mb-4 md:mb-6">
                     <div className="flex items-center gap-2">
-                        <Button 
-                            variant={viewMode === 'grid' ? 'default' : 'outline'} 
-                            size="sm" 
-                            onClick={() => setViewMode('grid')} 
+                        <Button
+                            variant={viewMode === 'grid' ? 'default' : 'outline'}
+                            size="sm"
+                            onClick={() => setViewMode('grid')}
                             className={`transition-all duration-200 ${viewMode === 'grid' ? 'bg-green-600 hover:bg-green-700 shadow-md' : ''}`}
                         >
                             <Grid className="h-4 w-4 mr-2" />
                             <span className="hidden sm:inline">Grille</span>
                         </Button>
-                        <Button 
-                            variant={viewMode === 'list' ? 'default' : 'outline'} 
-                            size="sm" 
-                            onClick={() => setViewMode('list')} 
+                        <Button
+                            variant={viewMode === 'list' ? 'default' : 'outline'}
+                            size="sm"
+                            onClick={() => setViewMode('list')}
                             className={`transition-all duration-200 ${viewMode === 'list' ? 'bg-green-600 hover:bg-green-700 shadow-md' : ''}`}
                         >
                             <List className="h-4 w-4 mr-2" />
@@ -167,35 +167,35 @@ export default function ProductsPage() {
 
                 {/* Products Grid/List */}
                 <div className="transition-all duration-300">
-                        {isLoading ? (
+                    {isLoading ? (
                         <div className={viewMode === 'grid' ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6' : 'space-y-4'}>
                             {Array.from({ length: 12 }).map((_, i) => (
                                 <Card key={i} className="overflow-hidden border-none shadow-md">
                                     <Skeleton className="h-40 md:h-48 w-full" />
                                     <div className="p-4 md:p-5 space-y-3">
-                                            <Skeleton className="h-4 w-24" />
+                                        <Skeleton className="h-4 w-24" />
                                         <Skeleton className="h-5 w-full" />
-                                            <Skeleton className="h-8 w-32" />
-                                            <Skeleton className="h-10 w-full" />
-                                        </div>
-                                    </Card>
-                                ))}
-                            </div>
-                        ) : productsData?.products && productsData.products.length > 0 ? (
-                        <div className={viewMode === 'grid' 
-                            ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6' 
+                                        <Skeleton className="h-8 w-32" />
+                                        <Skeleton className="h-10 w-full" />
+                                    </div>
+                                </Card>
+                            ))}
+                        </div>
+                    ) : productsData?.products && productsData.products.length > 0 ? (
+                        <div className={viewMode === 'grid'
+                            ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6'
                             : 'space-y-3 md:space-y-4'
                         }>
-                                {productsData.products.map((product) => {
-                                    const isFavorite = favorites.some(f => f.id === product.id);
-                                    const variant = product.variants && product.variants.length > 0 ? product.variants[0] : null;
-                                    return (
-                                    <Card 
-                                        key={product.id} 
+                            {productsData.products.map((product) => {
+                                const isFavorite = favorites.some(f => f.id === product.id);
+                                const variant = product.variants && product.variants.length > 0 ? product.variants[0] : null;
+                                return (
+                                    <Card
+                                        key={product.id}
                                         className="group overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border-none bg-white shadow-sm"
                                     >
-                                            {viewMode === 'grid' ? (
-                                                <>
+                                        {viewMode === 'grid' ? (
+                                            <>
                                                 <div className="relative h-40 md:h-48 overflow-hidden bg-gradient-to-br from-green-50 to-emerald-50">
                                                     <ProductImage
                                                         src={product.Image}
@@ -203,10 +203,10 @@ export default function ProductsPage() {
                                                         fill
                                                         className="group-hover:scale-110 transition-transform duration-500 ease-out"
                                                     />
-                                                    <Button 
-                                                        size="icon" 
-                                                        variant="secondary" 
-                                                        className="absolute top-2 right-2 rounded-full bg-white/90 hover:bg-white h-8 w-8 md:h-9 md:w-9 shadow-md transition-all duration-200 hover:scale-110" 
+                                                    <Button
+                                                        size="icon"
+                                                        variant="secondary"
+                                                        className="absolute top-2 right-2 rounded-full bg-white/90 hover:bg-white h-8 w-8 md:h-9 md:w-9 shadow-md transition-all duration-200 hover:scale-110"
                                                         onClick={() => toggleFavorite(product)}
                                                     >
                                                         <Heart className={`h-4 w-4 transition-all duration-200 ${isFavorite ? 'fill-red-500 text-red-500 scale-110' : ''}`} />
@@ -226,8 +226,8 @@ export default function ProductsPage() {
                                                         </span>
                                                     </div>
                                                     <div className="flex gap-2">
-                                                        <Button 
-                                                            className="flex-1 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-xs md:text-sm transition-all duration-200 hover:scale-105 active:scale-95" 
+                                                        <Button
+                                                            className="flex-1 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-xs md:text-sm transition-all duration-200 hover:scale-105 active:scale-95"
                                                             onClick={() => handleAddToCart(product)}
                                                         >
                                                             <ShoppingCart className="mr-2 h-4 w-4" />
@@ -235,9 +235,9 @@ export default function ProductsPage() {
                                                             <span className="sm:hidden">+</span>
                                                         </Button>
                                                         <Link href={`/products/${product.id}`}>
-                                                            <Button 
-                                                                variant="outline" 
-                                                                size="sm" 
+                                                            <Button
+                                                                variant="outline"
+                                                                size="sm"
                                                                 className="text-xs md:text-sm transition-all duration-200 hover:scale-105 active:scale-95"
                                                             >
                                                                 Voir
@@ -278,16 +278,16 @@ export default function ProductsPage() {
                                                             </span>
                                                         </div>
                                                         <div className="flex gap-2">
-                                                            <Button 
-                                                                size="icon" 
-                                                                variant="outline" 
-                                                                className="h-9 w-9 md:h-10 md:w-10 transition-all duration-200 hover:scale-110" 
+                                                            <Button
+                                                                size="icon"
+                                                                variant="outline"
+                                                                className="h-9 w-9 md:h-10 md:w-10 transition-all duration-200 hover:scale-110"
                                                                 onClick={() => toggleFavorite(product)}
                                                             >
                                                                 <Heart className={`h-4 w-4 transition-all duration-200 ${isFavorite ? 'fill-red-500 text-red-500 scale-110' : ''}`} />
                                                             </Button>
-                                                            <Button 
-                                                                className="flex-1 sm:flex-initial bg-gradient-to-r from-green-600 to-emerald-600 text-xs md:text-sm transition-all duration-200 hover:scale-105 active:scale-95" 
+                                                            <Button
+                                                                className="flex-1 sm:flex-initial bg-gradient-to-r from-green-600 to-emerald-600 text-xs md:text-sm transition-all duration-200 hover:scale-105 active:scale-95"
                                                                 onClick={() => handleAddToCart(product)}
                                                             >
                                                                 <ShoppingCart className="mr-2 h-4 w-4" />
@@ -295,120 +295,119 @@ export default function ProductsPage() {
                                                                 <span className="sm:hidden">+</span>
                                                             </Button>
                                                         </div>
-                                                        </div>
                                                     </div>
                                                 </div>
-                                            )}
-                                        </Card>
-                                    );
-                                })}
+                                            </div>
+                                        )}
+                                    </Card>
+                                );
+                            })}
+                        </div>
+                    ) : (
+                        <Card className="p-12 text-center border-none shadow-lg">
+                            <div className="inline-flex p-4 rounded-full bg-gray-100 mb-4">
+                                <Search className="h-12 w-12 text-gray-400" />
                             </div>
-                        ) : (
-                            <Card className="p-12 text-center border-none shadow-lg">
-                                <div className="inline-flex p-4 rounded-full bg-gray-100 mb-4">
-                                    <Search className="h-12 w-12 text-gray-400" />
-                                </div>
-                                <h3 className="text-2xl font-bold text-gray-900 mb-2">Aucun produit trouvé</h3>
-                                <p className="text-gray-600 mb-6">Essayez de modifier vos filtres ou votre recherche</p>
+                            <h3 className="text-2xl font-bold text-gray-900 mb-2">Aucun produit trouvé</h3>
+                            <p className="text-gray-600 mb-6">Essayez de modifier vos filtres ou votre recherche</p>
                             <Button onClick={clearFilters} variant="outline" className="transition-all duration-200 hover:scale-105">
                                 Réinitialiser les filtres
                             </Button>
-                            </Card>
-                        )}
+                        </Card>
+                    )}
 
-                        {/* Pagination */}
-                        {productsData && productsData.totalPages > 1 && (
+                    {/* Pagination */}
+                    {productsData && productsData.totalPages > 1 && (
                         <div className="mt-8 md:mt-12 space-y-4">
-                                <div className="flex items-center justify-center gap-2 flex-wrap">
-                                    <Button
-                                        variant="outline"
-                                        size="sm"
-                                        onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
-                                        disabled={currentPage === 1 || isLoading}
+                            <div className="flex items-center justify-center gap-2 flex-wrap">
+                                <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                                    disabled={currentPage === 1 || isLoading}
                                     className="flex items-center gap-2 transition-all duration-200 hover:scale-105 disabled:opacity-50"
-                                    >
-                                        <ChevronLeft className="h-4 w-4" />
-                                        Précédent
-                                    </Button>
-                                    
-                                    <div className="flex items-center gap-1">
-                                        {(() => {
-                                            const pages = [];
-                                            const totalPages = productsData.totalPages;
-                                            const current = currentPage;
-                                            
-                                            if (totalPages <= 7) {
-                                                for (let i = 1; i <= totalPages; i++) {
+                                >
+                                    <ChevronLeft className="h-4 w-4" />
+                                    Précédent
+                                </Button>
+
+                                <div className="flex items-center gap-1">
+                                    {(() => {
+                                        const pages = [];
+                                        const totalPages = productsData.totalPages;
+                                        const current = currentPage;
+
+                                        if (totalPages <= 7) {
+                                            for (let i = 1; i <= totalPages; i++) {
+                                                pages.push(i);
+                                            }
+                                        } else {
+                                            pages.push(1);
+
+                                            if (current > 3) {
+                                                pages.push('...');
+                                            }
+
+                                            const start = Math.max(2, current - 1);
+                                            const end = Math.min(totalPages - 1, current + 1);
+
+                                            for (let i = start; i <= end; i++) {
+                                                if (i !== 1 && i !== totalPages) {
                                                     pages.push(i);
                                                 }
-                                            } else {
-                                                pages.push(1);
-                                                
-                                                if (current > 3) {
-                                                    pages.push('...');
-                                                }
-                                                
-                                                const start = Math.max(2, current - 1);
-                                                const end = Math.min(totalPages - 1, current + 1);
-                                                
-                                                for (let i = start; i <= end; i++) {
-                                                    if (i !== 1 && i !== totalPages) {
-                                                        pages.push(i);
-                                                    }
-                                                }
-                                                
-                                                if (current < totalPages - 2) {
-                                                    pages.push('...');
-                                                }
-                                                
-                                                pages.push(totalPages);
                                             }
-                                            
-                                            return pages.map((page, idx) => {
-                                                if (page === '...') {
-                                                    return (
-                                                        <span key={`ellipsis-${idx}`} className="px-2 text-gray-400">
-                                                            ...
-                                                        </span>
-                                                    );
-                                                }
-                                                
+
+                                            if (current < totalPages - 2) {
+                                                pages.push('...');
+                                            }
+
+                                            pages.push(totalPages);
+                                        }
+
+                                        return pages.map((page, idx) => {
+                                            if (page === '...') {
                                                 return (
-                                                    <Button
-                                                        key={page}
-                                                        variant={currentPage === page ? 'default' : 'outline'}
-                                                        size="sm"
-                                                        onClick={() => setCurrentPage(page as number)}
-                                                    className={`transition-all duration-200 hover:scale-110 ${
-                                                        currentPage === page 
-                                                            ? 'bg-green-600 hover:bg-green-700 text-white shadow-md' 
-                                                            : ''
-                                                    }`}
-                                                    >
-                                                        {page}
-                                                    </Button>
+                                                    <span key={`ellipsis-${idx}`} className="px-2 text-gray-400">
+                                                        ...
+                                                    </span>
                                                 );
-                                            });
-                                        })()}
-                                    </div>
+                                            }
 
-                                    <Button
-                                        variant="outline"
-                                        size="sm"
-                                        onClick={() => setCurrentPage(prev => Math.min(productsData.totalPages, prev + 1))}
-                                        disabled={currentPage === productsData.totalPages || isLoading}
+                                            return (
+                                                <Button
+                                                    key={page}
+                                                    variant={currentPage === page ? 'default' : 'outline'}
+                                                    size="sm"
+                                                    onClick={() => setCurrentPage(page as number)}
+                                                    className={`transition-all duration-200 hover:scale-110 ${currentPage === page
+                                                            ? 'bg-green-600 hover:bg-green-700 text-white shadow-md'
+                                                            : ''
+                                                        }`}
+                                                >
+                                                    {page}
+                                                </Button>
+                                            );
+                                        });
+                                    })()}
+                                </div>
+
+                                <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => setCurrentPage(prev => Math.min(productsData.totalPages, prev + 1))}
+                                    disabled={currentPage === productsData.totalPages || isLoading}
                                     className="flex items-center gap-2 transition-all duration-200 hover:scale-105 disabled:opacity-50"
-                                    >
-                                        Suivant
-                                        <ChevronRight className="h-4 w-4" />
-                                    </Button>
-                                </div>
-
-                                <div className="text-center text-sm text-gray-600">
-                                    Page {productsData.currentPage} sur {productsData.totalPages} • {productsData.total} produits au total
-                                </div>
+                                >
+                                    Suivant
+                                    <ChevronRight className="h-4 w-4" />
+                                </Button>
                             </div>
-                        )}
+
+                            <div className="text-center text-sm text-gray-600">
+                                Page {productsData.currentPage} sur {productsData.totalPages} • {productsData.total} produits au total
+                            </div>
+                        </div>
+                    )}
                 </div>
             </div>
         </div>
